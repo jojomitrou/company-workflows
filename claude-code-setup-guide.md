@@ -207,7 +207,15 @@ That's it — the skills are now installed. Restart Claude Code and they're read
 **To update your skills later** (when new ones are added by the team):
 Run the exact same command — it overwrites with the latest version automatically. Or just start a new session with `/prep` — it checks for updates in the background every time.
 
-> **What did this install?** See Step 13 (Skills Reference) for the full list of what each skill does.
+**What did this install?**
+
+| Skill | When to use it | What it does |
+|-------|---------------|--------------|
+| `/prep` | Start of every session | Checks your GitHub, Obsidian, and connections are all live — then organises your day into Must Do, Should Do, and Check Later |
+| `/wrap` | End of every session | Saves everything to GitHub, writes a session note to Obsidian, and flags what's first up tomorrow |
+| `/week` | Monday morning or Friday afternoon | Monday: sets 3 goals for the week. Friday: reviews how the week went and notes carry-overs |
+| `/month` | First 3 days or last 3 days of the month | Plans the month ahead with goals and key dates, or runs a quick retro at the end |
+| `/quarter` | First 3 days or last 3 days of the quarter | Sets 3 outcomes for the quarter with milestones, or reviews what was achieved before the next one starts |
 
 ---
 
