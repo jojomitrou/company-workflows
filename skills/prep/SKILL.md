@@ -115,6 +115,11 @@ Gather this before asking the user anything. Do not narrate each step — just c
 
 ## Phase 3 — Plan the Day
 
+**Day-of-week awareness:**
+- **Monday:** after asking the main goal, also ask *"Any goals for the week?"* — add a **🗓 This Week** bucket above Must Do
+- **Friday:** after the daily structure, add *"It's Friday — want a quick review of the week before we start?"* — if yes, summarise the last 5 days of git commits and Obsidian notes in plain English
+- **Other days:** standard flow below
+
 Ask one question:
 
 > **"What's the main thing you want to get done today?"**
@@ -146,21 +151,37 @@ Park these — don't act now:
 
 ## Phase 4 — End-of-Session Save
 
-At the end of every session (or when the user says they're done), automatically commit and push — no confirmation needed:
+At the end of every session (or when the user says they're done), do both steps automatically — no confirmation needed:
 
+**Step 1 — Commit and push:**
 ```
 git add -A
 git commit -m "[brief description of what was done] — [date]"
 git push
 ```
 
-Just confirm it happened:
-> *"All saved to GitHub — [repo name]."*
+**Step 2 — Write Obsidian session note:**
+Create a new `.md` file in the vault at `_sessions/YYYY-MM-DD.md` with this structure:
+```
+# Session — [Date]
 
-**Default behaviour:** Always commit and push automatically. Only pause and ask if:
-- The user explicitly says "don't push yet" or "hold off on committing"
-- There is a merge conflict that needs resolving
-- The user is on a branch that shouldn't be pushed directly (e.g. `main` with branch protection)
+## What we worked on
+[2–4 plain-English sentences summarising what was done]
+
+## Decisions made
+[Any choices or directions agreed during the session]
+
+## What's next
+[The top 1–2 things to pick up next time, from today's Should Do or Check Later]
+```
+
+Then confirm:
+> *"All saved to GitHub and noted in Obsidian — [date]."*
+
+**Default behaviour:** Always commit, push, and write the note automatically. Only pause and ask if:
+- The user explicitly says "don't push yet"
+- There is a merge conflict
+- The branch has protection rules that block a direct push
 
 ---
 
