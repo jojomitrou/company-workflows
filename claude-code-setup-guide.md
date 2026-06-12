@@ -169,6 +169,8 @@ Skills are like superpowers you activate by typing `/skill-name` in the Claude c
 
 ### How to Install All Skills
 
+> **Important:** All `/plugin` commands below must be run **inside a Claude session in VS Code** — not in the regular terminal. Open your VS Code terminal, type `claude` and press **Enter** to start a session, then copy and paste the commands directly into the Claude chat.
+
 **Step 1 — Add the plugin marketplace**
 ```
 /plugin marketplace add anthropics/claude-plugins-official
