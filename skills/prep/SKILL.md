@@ -1,6 +1,6 @@
 ---
 name: prep
-description: Use at the start of every VS Code session to verify GitHub, BigQuery, Obsidian, Gmail, Google Calendar, and Jira are connected and ready before starting any work.
+description: Use at the start of every VS Code session to verify GitHub, BigQuery, Obsidian, Gmail, Google Calendar, Jira, and Slack are connected and ready before starting any work.
 ---
 
 # Session Prep
@@ -78,9 +78,29 @@ Call the Atlassian MCP to check connectivity. Try fetching the user's profile or
 
 ---
 
+## Step 7 — Slack
+
+Try calling the Slack MCP to list channels:
+- MCP server: `slack` via `@modelcontextprotocol/server-slack`
+- **Pass:** returns a list of Slack channels
+- **Fail (MCP not configured):** walk the user through setup:
+  1. Go to **https://api.slack.com/apps** and click **Create New App → From scratch**
+  2. Name it (e.g. "Claude Code") and select the Quantum Media workspace
+  3. Go to **OAuth & Permissions** and add these Bot Token Scopes:
+     `channels:read`, `channels:history`, `groups:read`, `groups:history`, `users:read`, `chat:write`
+  4. Click **Install to Workspace** and copy the **Bot User OAuth Token** (starts with `xoxb-`)
+  5. In VS Code terminal run:
+     ```
+     claude mcp add slack -e SLACK_BOT_TOKEN=xoxb-your-token-here -- npx -y @modelcontextprotocol/server-slack
+     ```
+  6. Restart Claude and re-run `/prep`
+- **Fail (auth error):** token may have expired — repeat steps 4–6 with a fresh token
+
+---
+
 ## Report
 
-Run all six checks, then print one status block:
+Run all seven checks, then print one status block:
 
 ```
 ────────────────────────────────────────
@@ -92,6 +112,7 @@ Run all six checks, then print one status block:
   Gmail           ✅  connected
   Google Calendar ✅  connected — [N] calendars
   Jira            ✅  connected
+  Slack           ✅  connected — [N] channels
 ────────────────────────────────────────
   All systems go. Ready to work!
 ────────────────────────────────────────
@@ -110,7 +131,9 @@ If anything fails, show the fix inline:
   Gmail           ✅  OK
   Google Calendar ✅  OK
   Jira            ❌  needs authentication
-                  → Claude Code settings → MCP → Atlassian → Authenticate
+                  → type /mcp → find Atlassian → Ctrl+click link → log in
+  Slack           ❌  not configured
+                  → see Step 7 above for full setup instructions
 ────────────────────────────────────────
   Fix the above before starting work.
 ────────────────────────────────────────
