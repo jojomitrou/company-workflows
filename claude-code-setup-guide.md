@@ -175,6 +175,40 @@ Skills are like superpowers you activate by typing `/skill-name` in the Claude c
 
 ---
 
+**Step 3 — Add the second marketplace (alirezarezvani)**
+
+This marketplace has additional skill packs by domain. First add it:
+```
+/plugin marketplace add alirezarezvani/claude-skills
+```
+
+Then install by domain — pick the ones relevant to your role:
+
+| What it installs | Command | Skills |
+|-----------------|---------|--------|
+| Core engineering | `/plugin install engineering-skills@claude-code-skills` | 24 core engineering skills |
+| Advanced engineering | `/plugin install engineering-advanced-skills@claude-code-skills` | 25 POWERFUL-tier skills |
+| Product | `/plugin install product-skills@claude-code-skills` | 12 product skills |
+| Marketing | `/plugin install marketing-skills@claude-code-skills` | 43 marketing skills |
+| Regulatory / Quality | `/plugin install ra-qm-skills@claude-code-skills` | 12 regulatory & quality skills |
+| Project management | `/plugin install pm-skills@claude-code-skills` | 6 project management skills |
+| C-level advisory | `/plugin install c-level-skills@claude-code-skills` | 28 C-suite advisory skills |
+| Business & growth | `/plugin install business-growth-skills@claude-code-skills` | 4 business & growth skills |
+| Finance | `/plugin install finance-skills@claude-code-skills` | 2 finance skills (analyst + SaaS metrics) |
+
+Or install individual skills from this marketplace:
+
+| Skill | Command |
+|-------|---------|
+| Security scanner | `/plugin install skill-security-auditor@claude-code-skills` |
+| Playwright testing toolkit | `/plugin install playwright-pro@claude-code-skills` |
+| Auto-memory curation | `/plugin install self-improving-agent@claude-code-skills` |
+| Content creator | `/plugin install content-creator@claude-code-skills` |
+
+> Source: **https://github.com/alirezarezvani/claude-skills**
+
+---
+
 Here's everything available, grouped by who needs them and why.
 
 ---
