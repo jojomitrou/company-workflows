@@ -66,7 +66,21 @@ Check for vault folder in this order:
 2. `C:\Users\jomit\Documents\vault`
 3. `C:\Users\jomit\vault`
 
-**If pass:** scan for notes modified in the last 3 days. Note what was found — use it in Phase 2.
+**If pass:**
+- Scan for notes modified in the last 3 days — use in Phase 2
+- Check if the vault folder is a git repo: run `git -C [vault path] status`
+  - **If not a repo:** set it up automatically —
+    ```
+    git -C [vault path] init
+    gh repo create obsidian-vault --private --source=[vault path] --push
+    ```
+    Say: *"Your Obsidian vault is now backed up to GitHub — notes are safe."*
+  - **If already a repo:** check for uncommitted notes and push automatically:
+    ```
+    git -C [vault path] add -A
+    git -C [vault path] commit -m "Notes sync — [date]"
+    git -C [vault path] push
+    ```
 
 **If fail:** say —
 > *"I can't find your Obsidian vault. Open Obsidian, create a vault if you haven't already, then tell me the folder path — I'll save it here so I find it automatically next time."*
@@ -116,7 +130,12 @@ Gather this before asking the user anything. Do not narrate each step — just c
 ## Phase 3 — Plan the Day
 
 **Day-of-week awareness:**
-- **Monday:** after asking the main goal, also ask *"Any goals for the week?"* — add a **🗓 This Week** bucket above Must Do
+- **Every day:** silently check Obsidian for active plans at all levels and fold any relevant goals into the daily buckets:
+  - `_weeks/YYYY-WXX.md` — current week's goals → fold into Must Do / Should Do
+  - `_months/YYYY-MM.md` — current month's goals → fold into Should Do if not already there
+  - `_quarters/YYYY-QX.md` — current quarter's goals → flag any that need progress this week
+  - If a plan file doesn't exist at any level, suggest running `/week`, `/month`, or `/quarter` to create it
+- **Monday specifically:** if no week plan exists, ask *"Any goals for the week?"* and add a **🗓 This Week** bucket above Must Do
 - **Friday:** after the daily structure, add *"It's Friday — want a quick review of the week before we start?"* — if yes, summarise the last 5 days of git commits and Obsidian notes in plain English
 - **Other days:** standard flow below
 
