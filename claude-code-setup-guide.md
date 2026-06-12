@@ -147,25 +147,31 @@ That's it. A screen will appear at the bottom and you can start talking to it li
 
 ## Available Skills — What You Can Ask Claude to Do
 
-Skills are like superpowers you activate by typing `/skill-name` in the Claude chat. Before you can use them, you need to install them once. Here's how.
+Skills are like superpowers you activate by typing `/skill-name` in the Claude chat. Before you can use them, you need to install them once. Here's the full list of installs — you only ever need to do this once.
 
-### Step 1 — Add the Marketplace
+---
 
-Open Claude in VS Code and type:
+### How to Install All Skills
+
+**Step 1 — Add the plugin marketplace**
 ```
 /plugin marketplace add anthropics/claude-plugins-official
 ```
 
-### Step 2 — Install the Skills
+**Step 2 — Install each skill pack**
 
-The skills we use come from the **Superpowers** plugin. Type:
-```
-/plugin install superpowers@claude-plugins-official
-```
+| What it installs | Command | Source |
+|-----------------|---------|--------|
+| Superpowers (TDD, debugging, planning skills) | `/plugin install superpowers@claude-plugins-official` | https://github.com/obra/superpowers |
+| GSD — project & workflow management | `npm install -g get-shit-done` | https://www.npmjs.com/package/get-shit-done |
+| Marketing & CRO skills | `npx skills install coreyhaines31/marketingskills` | https://github.com/coreyhaines31/marketingskills |
+| GitHub skills (github, gh-issues) | `npx skills install openclaw/openclaw` | https://github.com/openclaw/openclaw |
+| ClickHouse | `npx skills install affaan-m/everything-claude-code` | https://github.com/affaan-m/everything-claude-code |
+| NotebookLM | `npx skills install PleasePrompto/notebooklm-skill` | https://github.com/PleasePrompto/notebooklm-skill |
+| Find Skills | `npx skills install vercel-labs/skills` | https://github.com/vercel-labs/skills |
+| Skill Lookup (prompts.chat) | `npx skills install f/prompts.chat` | https://prompts.chat |
 
-> The source code lives at: **https://github.com/obra/superpowers**
-
-That's it — you only need to do this once. After installing, all the skills below are available immediately.
+> After installing, restart Claude in VS Code and all skills below are ready to use.
 
 ---
 
