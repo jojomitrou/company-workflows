@@ -38,8 +38,13 @@ git status
 
 **If pass (inside a repo):**
 - Check for any uncommitted changes from the last session: `git status`
-- If there are unsaved changes, ask: *"You have work from last time that wasn't saved to GitHub — want me to commit it now before we start?"*
-- If yes, run `git add -A` and `git commit -m "Session save — [date]"` and `git push`
+- If there are unsaved changes, commit and push immediately — no need to ask:
+  ```
+  git add -A
+  git commit -m "Session save — [date]"
+  git push
+  ```
+  Then note it in the briefing: *"Saved [N] uncommitted files from last session."*
 
 **If fail (not a repo):**
 Say —
@@ -127,19 +132,23 @@ Park these — don't act now:
 
 ---
 
-## Phase 4 — End-of-Session Reminder
+## Phase 4 — End-of-Session Save
 
-At the end of every session (or when the user says they're done), always run:
+At the end of every session (or when the user says they're done), automatically commit and push — no confirmation needed:
 
 ```
-git status
 git add -A
-git commit -m "Work saved — [brief description] — [date]"
+git commit -m "[brief description of what was done] — [date]"
 git push
 ```
 
-Say:
-> *"Before we close — let's push everything to GitHub so your work is saved."*
+Just confirm it happened:
+> *"All saved to GitHub — [repo name]."*
+
+**Default behaviour:** Always commit and push automatically. Only pause and ask if:
+- The user explicitly says "don't push yet" or "hold off on committing"
+- There is a merge conflict that needs resolving
+- The user is on a branch that shouldn't be pushed directly (e.g. `main` with branch protection)
 
 ---
 
