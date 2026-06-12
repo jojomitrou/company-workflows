@@ -1,141 +1,123 @@
 ---
 name: prep
-description: Use at the start of every VS Code session to verify GitHub, BigQuery, Obsidian, Gmail, Google Calendar, Jira, and Slack are connected and ready before starting any work.
+description: Use at the start of every VS Code session to run the daily workflow kickoff — verifies critical connections, gathers context, and organises the day into Must Do, Should Do, and Check Later.
 ---
 
-# Session Prep
+# Daily Session Prep
 
-Run this at the start of every session. Check all six connections and report status before doing anything else.
+Run this at the start of every session. It does three things in order: checks connections, gathers context, then structures the day.
 
 ---
 
-## Step 1 — GitHub
+## Phase 1 — Connections
 
-Run:
+### Blocking (must be ✅ before continuing)
+
+**GitHub**
 ```
 gh auth status
 ```
-- **Pass:** output includes "Logged in to github.com as [username]"
-- **Fail:** run `gh auth login` to fix
+- **Pass:** "Logged in to github.com as [username]"
+- **Fail:** run `gh auth login` — do not proceed until resolved
 
----
-
-## Step 2 — BigQuery
-
-Run:
-```
-gcloud auth list
-gcloud auth application-default print-access-token
-```
-- **Pass:** an account is marked ACTIVE and a token string prints
-- **Fail:** run `gcloud auth application-default login` to fix
-
----
-
-## Step 3 — Obsidian Vault
-
-Check whether the vault folder exists, in this order:
+**Obsidian Vault**
+Check for the vault folder in this order:
 1. `C:\Users\jomit\OneDrive\Documents\vault`
 2. `C:\Users\jomit\Documents\vault`
 3. `C:\Users\jomit\vault`
 
-Count the `.md` files found.
+- **Pass:** folder exists with at least one `.md` file
+- **Fail:** ask the user to confirm vault path — do not proceed until resolved
 
-- **Pass:** folder exists and contains at least one `.md` file
-- **Fail:** ask the user to confirm the vault path, then update this skill
+### Non-blocking (check but do not block)
 
----
-
-## Step 4 — Gmail
-
-Call the Gmail MCP tool to list labels (a lightweight read with no side effects):
-- Use: `list_labels`
-- **Pass:** returns a list of Gmail labels
-- **Fail:** MCP returned an auth error or no response — tell the user to re-authenticate Gmail in Claude settings
-
----
-
-## Step 5 — Google Calendar
-
-Call the Google Calendar MCP tool to list calendars:
-- Use: `list_calendars`
-- **Pass:** returns at least one calendar
-- **Fail:** MCP returned an auth error — tell the user to re-authenticate Google Calendar in Claude settings
+| Service | How to check | If failing |
+|---------|-------------|------------|
+| BigQuery | `gcloud auth list` | ⚠️ flag only if data work needed today |
+| Gmail | Call `list_labels` via MCP | ⚠️ non-blocking |
+| Google Calendar | Call `list_calendars` via MCP | ⚠️ non-blocking |
+| Jira | Atlassian MCP call | ⚠️ flag only if ticket work needed today |
+| Slack | Slack MCP `list_channels` | ⚠️ non-blocking |
 
 ---
 
-## Step 6 — Jira (Atlassian) *(optional)*
+## Phase 2 — Context Gathering
 
-Call the Atlassian MCP to check connectivity. Try fetching the user's profile or project list.
-- MCP server: `plugin:pm-skills:atlassian` at `https://mcp.atlassian.com/v1/sse`
-- **Pass:** returns valid data (profile, projects, or issues)
-- **Fail:** show as ⚠️ in the report — this is non-blocking. Only flag it if the user's current task requires Jira access. If so, walk them through:
-  1. Type `/mcp` in the Claude chat to see all connected services
-  2. Find **Atlassian** — it will show "Needs authentication"
-  3. Claude will provide a link — open it with **Ctrl + left-click**
-  4. Log in with your Atlassian work account in the browser
-  5. Return to VS Code and re-run `/prep` to confirm it's connected
+Once GitHub and Obsidian are confirmed, gather context before asking the user anything.
+
+1. **Read Obsidian** — scan the vault for any notes from the last session, open todos, or flagged items. Look for files modified in the last 3 days.
+2. **Check GitHub** — run `gh pr list` and `gh issue list` to see open PRs and issues assigned to the user
+3. **Check Calendar** (if connected) — call `list_events` for today to see meetings scheduled
+4. **Check Jira** (if connected) — look for in-progress or blocked tickets in the current sprint
+5. **Check Slack** (if connected) — look for unread mentions or flagged messages
+
+Do this silently — do not report each step. Just gather the information.
 
 ---
 
-## Step 7 — Slack
+## Phase 3 — Daily Structure
 
-Try calling the Slack MCP to list channels:
-- MCP server: `slack` via `@modelcontextprotocol/server-slack`
-- **Pass:** returns a list of Slack channels
-- **Fail (MCP not configured):** walk the user through setup:
-  1. Go to **https://api.slack.com/apps** and click **Create New App → From scratch**
-  2. Name it (e.g. "Claude Code") and select the Quantum Media workspace
-  3. Go to **OAuth & Permissions** and add these Bot Token Scopes:
-     `channels:read`, `channels:history`, `groups:read`, `groups:history`, `users:read`, `chat:write`
-  4. Click **Install to Workspace** and copy the **Bot User OAuth Token** (starts with `xoxb-`)
-  5. In VS Code terminal run:
-     ```
-     claude mcp add slack -e SLACK_BOT_TOKEN=xoxb-your-token-here -- npx -y @modelcontextprotocol/server-slack
-     ```
-  6. Restart Claude and re-run `/prep`
-- **Fail (auth error):** token may have expired — repeat steps 4–6 with a fresh token
+Ask the user one question:
+
+> **"What's the main thing you want to get done today?"**
+
+Then, using what they say combined with everything gathered in Phase 2, organise the day into three buckets:
+
+### ✅ Must Do
+Tasks that absolutely need to happen today. These are either:
+- What the user just said is the main goal
+- Blocking items found in GitHub (PRs awaiting review, failing CI)
+- Today's meetings from Calendar
+- Blocked Jira tickets
+
+### 📋 Should Do
+Important but not urgent. These are:
+- Open GitHub issues or non-blocking PRs
+- Follow-ups from Obsidian notes
+- Non-urgent Jira tasks in the sprint
+- Items the user mentioned but aren't today's main focus
+
+### 🔁 Check Later
+Things to keep an eye on but not act on now:
+- Slack threads or mentions that don't need immediate response
+- GitHub notifications that aren't assigned to the user
+- Ideas or notes from Obsidian flagged for "someday"
+- Anything the user wants to park for later in the day
 
 ---
 
 ## Report
 
-Run all seven checks, then print one status block:
+Print the full daily briefing once everything is done:
 
 ```
+════════════════════════════════════════
+  DAILY PREP — Quantum Media
+  [Day, Date]
+════════════════════════════════════════
+
+  CONNECTIONS
+  GitHub      ✅  @[username]
+  Obsidian    ✅  [N] notes in vault
+  BigQuery    ✅ / ⚠️
+  Gmail       ✅ / ⚠️
+  Calendar    ✅ / ⚠️
+  Jira        ✅ / ⚠️
+  Slack       ✅ / ⚠️
+
 ────────────────────────────────────────
-  SESSION PREP — Quantum Media
-────────────────────────────────────────
-  GitHub          ✅  logged in as @[username]
-  BigQuery        ✅  active: [email]
-  Obsidian        ✅  vault found — [N] notes
-  Gmail           ✅  connected
-  Google Calendar ✅  connected — [N] calendars
-  Jira            ⚠️  not connected (will flag if needed)
-  Slack           ✅  connected — [N] channels
-────────────────────────────────────────
-  All systems go. Ready to work!
-────────────────────────────────────────
+  ✅ MUST DO
+  • [task 1]
+  • [task 2]
+
+  📋 SHOULD DO
+  • [task 1]
+  • [task 2]
+
+  🔁 CHECK LATER
+  • [item 1]
+  • [item 2]
+════════════════════════════════════════
 ```
 
-If anything fails, show the fix inline:
-
-```
-────────────────────────────────────────
-  SESSION PREP — Quantum Media
-────────────────────────────────────────
-  GitHub          ✅  OK
-  BigQuery        ❌  not authenticated
-                  → run: gcloud auth application-default login
-  Obsidian        ✅  OK
-  Gmail           ✅  OK
-  Google Calendar ✅  OK
-  Jira            ⚠️  not connected (non-blocking — will flag if needed)
-  Slack           ❌  not configured
-                  → see Step 7 above for full setup instructions
-────────────────────────────────────────
-  Fix the above before starting work.
-────────────────────────────────────────
-```
-
-Do not proceed with any other task until GitHub, BigQuery, Obsidian, Gmail, Google Calendar, and Slack all show ✅. Jira (⚠️) is non-blocking — only raise it if the current task requires Jira access.
+After printing, ask: **"Anything to add or move between buckets?"** — adjust based on their answer, then begin work on the first Must Do item.
