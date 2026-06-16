@@ -88,25 +88,26 @@ Format: line 1 = local path, line 2 = GitHub URL
 Say:
 > *"This is your first time running /prep. Let's create your personal workflows repo so your skills live somewhere you control — not in ai_feautures."*
 
-1. Ask: **"What would you like to call your workflows repo?"** (suggest `daily_workflows`)
-2. Get GitHub username: `gh api user --jq .login`
-3. Create the repo: `gh repo create [username]/[name] --private`
-4. Ask: **"Where would you like to clone it?"** (suggest `C:\Users\[username]\Documents\git repos\[name]`)
-5. Clone it: `git clone https://github.com/[username]/[name] "[localPath]"`
-6. Copy current installed skills into it:
+1. Ask: **"What's your company or team name?"** → write to `$env:USERPROFILE\.claude\.company` (used in briefing headers)
+2. Ask: **"What would you like to call your workflows repo?"** (suggest `daily_workflows`)
+3. Get GitHub username: `gh api user --jq .login`
+4. Create the repo: `gh repo create [username]/[name] --private`
+5. Ask: **"Where would you like to clone it?"** (suggest `C:\Users\[username]\Documents\git repos\[name]`)
+6. Clone it: `git clone https://github.com/[username]/[name] "[localPath]"`
+7. Copy current installed skills into it:
    `Copy-Item -Recurse "$env:USERPROFILE\.claude\skills\*" "[localPath]\skills\" -Force`
-7. Commit and push:
+8. Commit and push:
    ```
    git -C "[localPath]" add -A
    git -C "[localPath]" commit -m "init: bootstrap from ai_feautures"
    git -C "[localPath]" push
    ```
-8. Write config to `$env:USERPROFILE\.claude\.workflows-repo` (two lines):
+9. Write config to `$env:USERPROFILE\.claude\.workflows-repo` (two lines):
    ```
    [localPath]
    https://github.com/[username]/[name]
    ```
-9. Write initial hash: `git -C "[localPath]" rev-parse HEAD` → save to `$env:USERPROFILE\.claude\.skills-hash`
+10. Write initial hash: `git -C "[localPath]" rev-parse HEAD` → save to `$env:USERPROFILE\.claude\.skills-hash`
 
 Confirm:
 > *"Done — your workflows repo is live at https://github.com/[username]/[name]. All future skill updates will come from there."*
