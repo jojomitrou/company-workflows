@@ -8,8 +8,8 @@ description: Use at the end of every VS Code session to commit and push all work
 Run this when the day's work is done. Fully automatic — no questions except the two below.
 
 **Task files (always these paths):**
-- Carry-over list: `$env:USERPROFILE\.claude\carry_over_tasks.md`
-- Completed log:   `$env:USERPROFILE\.claude\task_log.md`
+- Active tasks: `$env:USERPROFILE\.claude\carry_over_tasks.md`
+- Session log:  `$env:USERPROFILE\.claude\task_log.md`
 
 ---
 
@@ -50,13 +50,9 @@ If there are no changes, skip silently — do not mention it.
 1. Read `carry_over_tasks.md` (if it exists — skip if empty/missing)
 2. Show the current task list to the user
 3. Ask: **"Which of these did you finish today?"**
-4. For each task the user marks as done:
-   - Append to `task_log.md` in this format:
-     ```
-     [YYYY-MM-DD] ✅ [task description]
-     ```
-   - Remove it from `carry_over_tasks.md`
-5. If none are done, skip without asking again
+4. Note the user's answer — used to close the session log in Step 3
+
+If the list is empty or the user says none, skip without asking again.
 
 ---
 
@@ -64,17 +60,38 @@ If there are no changes, skip silently — do not mention it.
 
 Ask: **"Anything to add for tomorrow?"**
 
-For each task the user gives:
-- Append to `carry_over_tasks.md` as a numbered list item
-- Re-number the list cleanly after adding
+Note any new tasks the user gives — used in Step 4.
 
 If they say nothing or "no", skip.
 
 ---
 
-## Step 4 — Confirm
+## Step 4 — Close the Session Log
 
-Print the final wrap box. Show the full carry-over list (remaining + newly added):
+Find the current open session entry in `task_log.md` (the most recent `## Session —` block opened by `/prep`). Append the closing record:
+
+```
+### Completed ✅
+- [task marked done — or "None"]
+
+### Not completed ❌
+- [task not done — carried over]
+
+### Added ➕
+- [new task added this session — or "None"]
+```
+
+Then update `carry_over_tasks.md`:
+- Remove completed tasks
+- Keep not-completed tasks
+- Add new tasks
+- Re-number cleanly
+
+---
+
+## Step 5 — Confirm
+
+Print the final wrap box:
 
 ```
 ════════════════════════════════════════
@@ -83,6 +100,12 @@ Print the final wrap box. Show the full carry-over list (remaining + newly added
   ✅  Committed and pushed to GitHub
 
   ✅  COMPLETED TODAY
+  • [task] / None
+
+  ❌  NOT COMPLETED (carried over)
+  • [task] / None
+
+  ➕  ADDED FOR NEXT SESSION
   • [task] / None
 
   📋  CARRY OVER TO TOMORROW

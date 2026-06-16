@@ -10,12 +10,17 @@ Check today's date and run the correct mode automatically:
 - **Days 28–31 of the month:** RETRO mode
 - **Mid-month:** ask — *"Are we planning the month or reviewing it?"*
 
+**Task files (always these paths):**
+- Active tasks: `$env:USERPROFILE\.claude\carry_over_tasks.md`
+- Session log:  `$env:USERPROFILE\.claude\task_log.md`
+
 ---
 
 ## PLAN Mode (start of month)
 
 ### 1 — Gather context silently
 - Run `git log --oneline --since="30 days ago"` to see what shipped last month
+- Read `task_log.md` — find last month's retro entry for carry-overs
 - Check Jira for any monthly milestones or quarterly goals (if connected)
 - Check Calendar for key dates this month (if connected)
 
@@ -33,7 +38,30 @@ Then: *"Any deadlines or key dates this month I should know about?"*
 | 📋 Projects in Flight | Ongoing work that needs to move forward this month |
 | 🔁 Carry-overs | Anything unfinished from last month |
 
-### 4 — Commit and push automatically
+Add the 3 goals to `carry_over_tasks.md`.
+
+### 4 — Open a month entry in `task_log.md`
+
+Append:
+```
+## [Month] [Year] Plan — [date]
+
+### Goals
+1. [goal 1]
+2. [goal 2]
+3. [goal 3]
+
+### Key dates
+- [date]: [event]
+
+### Projects in flight
+- [project]
+
+### Carry-overs from last month
+- [item if any]
+```
+
+### 5 — Commit and push automatically
 ```
 git add -A
 git commit -m "[Month] [Year] plan — [date]"
@@ -64,6 +92,11 @@ Print:
 
 ### 1 — Gather context silently
 - Run `git log --oneline --since="30 days ago"` for a full picture of what shipped
+- Read `task_log.md` — collect all session and week entries for this month:
+  - Total tasks completed ✅ across all sessions
+  - Total not completed ❌
+  - Total added ➕
+  - Week goal achievement rates
 - Check Jira for completed tickets this month (if connected)
 
 ### 2 — Ask four questions (one at a time)
@@ -72,7 +105,39 @@ Print:
 3. *"What took more time or energy than expected?"*
 4. *"What's the one thing you'd do differently next month?"*
 
-### 3 — Commit and push automatically
+### 3 — Close the month entry in `task_log.md`
+
+Append to the `## [Month] [Year] Plan` entry:
+```
+## [Month] [Year] Retro — [date]
+
+### Task summary
+- Sessions this month: [N]
+- Completed ✅: [N]
+- Not completed ❌: [N]
+- Added during month ➕: [N]
+
+### Goals achieved
+- ✅ / ❌ [goal 1]
+- ✅ / ❌ [goal 2]
+- ✅ / ❌ [goal 3]
+
+### Biggest wins
+[user's answer]
+
+### What didn't happen
+[user's answer]
+
+### Bigger than expected
+[user's answer]
+
+### Do differently next month
+[user's answer]
+```
+
+Ask: **"Anything to carry into next month?"** — add to `carry_over_tasks.md`.
+
+### 4 — Commit and push automatically
 ```
 git add -A
 git commit -m "[Month] [Year] retro — [date]"
@@ -84,8 +149,11 @@ Print:
 ════════════════════════════════════
   [MONTH] [YEAR] RETRO
 ════════════════════════════════════
-  Goals achieved: [N/N]
-  Retro saved.
+  Sessions:            [N]
+  Tasks completed:     [N]
+  Tasks not completed: [N]
+  Tasks added:         [N]
+  Goals achieved:      [N/3]
   Carry-overs noted for [next month].
 ════════════════════════════════════
   Good month. On to [next month].

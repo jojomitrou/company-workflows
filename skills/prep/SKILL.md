@@ -9,6 +9,10 @@ Run this at the start of every session.
 
 The golden rule of every session: **everything the user works on must end up saved in a GitHub repository**. Notes, plans, code, decisions — all of it. GitHub is the safety net. Nothing should live only on the laptop.
 
+**Task files (always these paths):**
+- Active tasks: `$env:USERPROFILE\.claude\carry_over_tasks.md`
+- Session log:  `$env:USERPROFILE\.claude\task_log.md`
+
 ---
 
 ## Phase 1 — Foundation Check
@@ -125,16 +129,20 @@ Confirm:
 
 ---
 
-## Phase 2 — Last Session Summary (automatic)
+## Phase 2 — Task & Last Session Review (automatic)
 
-Silently gather last session context from git — no question needed, always shown in the briefing:
-- `git log --oneline -5` for the last 5 commits
-- Summarise in 2–3 plain-English lines — what was worked on, nothing technical
+Silently gather context — always shown in the briefing.
 
-Also silently read the carry-over task list:
-- File: `$env:USERPROFILE\.claude\carry_over_tasks.md`
-- If the file exists and has tasks, include every item in the **Must Do** bucket (Phase 4)
-- If the file is empty or missing, skip — do not mention it
+**Active tasks:**
+- Read `carry_over_tasks.md` — include every item in the Must Do bucket (Phase 4)
+- If empty or missing, skip
+
+**Last session:**
+- Read the most recent session entry in `task_log.md` (the last `## Session —` block)
+- Summarise in 1–2 lines what was done and what carried over
+
+**Git log:**
+- `git log --oneline -5` — summarise in plain English
 
 ---
 
@@ -159,10 +167,11 @@ Ask one question:
 
 > **"What's the main thing you want to get done today?"**
 
-Then combine with everything from Phase 3 and organise into three buckets:
+Then combine with everything from Phase 2 and 3 and organise into three buckets:
 
 ### ✅ Must Do
 - The user's stated main goal
+- All items from `carry_over_tasks.md`
 - Blocking GitHub items (failing CI, PRs waiting on them)
 - Today's meetings
 - Blocked Jira tickets
@@ -175,6 +184,17 @@ Then combine with everything from Phase 3 and organise into three buckets:
 ### 🔁 Check Later
 - GitHub notifications not assigned to the user
 - Anything the user wants to revisit later
+
+After confirming the buckets, **open today's session in `task_log.md`:**
+
+```
+## Session — [YYYY-MM-DD]
+
+### Planned
+[numbered list from carry_over_tasks.md + user's stated goal]
+```
+
+Add any tasks the user names to `carry_over_tasks.md` as well.
 
 ---
 
@@ -205,7 +225,7 @@ Gather everything silently first, then print one single box.
 ════════════════════════════════════════
   DAILY PREP — [Day, Date]
 ════════════════════════════════════════
-  GitHub      ✅  @[username]
+  GitHub      ✅ / ⚠️
   BigQuery    ✅ / ⚠️
   Gmail       ✅ / ⚠️
   Calendar    ✅ / ⚠️
@@ -213,16 +233,15 @@ Gather everything silently first, then print one single box.
 
   📅 MEETINGS TODAY
   [HH:MM]  [meeting title — attendees if known]
-  [HH:MM]  [meeting title]
 
 ────────────────────────────────────────
-  🕐 LAST SESSION — [date of last commit]
-  [2–3 plain-English lines from git log]
+  🕐 LAST SESSION — [date]
+  [1–2 plain-English lines from task_log.md + git log]
 
 ────────────────────────────────────────
   📢 STANDUP
   ✅ Yesterday
-     • [plain-English summary of yesterday's commits]
+     • [summary from last session's completed tasks]
   🔨 Today
      • [Must Do item 1]
      • [Must Do item 2]
@@ -235,17 +254,14 @@ Gather everything silently first, then print one single box.
 
 ────────────────────────────────────────
   ✅ MUST DO
-  • [task 1]
-  • [task 2]
+  • [carry-over tasks + today's goal]
 
   📋 SHOULD DO
   • [task 1]
-  • [task 2]
 
   🔁 CHECK LATER
   • [item 1]
-  • [item 2]
 ════════════════════════════════════════
 ```
 
-After printing, ask only: **"Anything to add or move between buckets?"** — adjust, then begin the first Must Do item.
+After printing, ask only: **"Anything to add or move between buckets?"** — adjust, update `carry_over_tasks.md` and the session log accordingly, then begin the first Must Do item.
