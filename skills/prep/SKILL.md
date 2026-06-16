@@ -89,25 +89,24 @@ Say:
 > *"This is your first time running /prep. Let's create your personal workflows repo so your skills live somewhere you control — not in ai_feautures."*
 
 1. Ask: **"What's your company or team name?"** → write to `$env:USERPROFILE\.claude\.company` (used in briefing headers)
-2. Ask: **"What would you like to call your workflows repo?"** (suggest `daily_workflows`)
-3. Get GitHub username: `gh api user --jq .login`
-4. Create the repo: `gh repo create [username]/[name] --private`
-5. Ask: **"Where would you like to clone it?"** (suggest `C:\Users\[username]\Documents\git repos\[name]`)
-6. Clone it: `git clone https://github.com/[username]/[name] "[localPath]"`
-7. Copy current installed skills into it:
-   `Copy-Item -Recurse "$env:USERPROFILE\.claude\skills\*" "[localPath]\skills\" -Force`
-8. Commit and push:
+2. Get GitHub username: `gh api user --jq .login`
+3. Create the repo: `gh repo create [username]/daily_workflows --private`
+4. Clone it to `C:\Users\[username]\Documents\git repos\daily_workflows`:
+   `git clone https://github.com/[username]/daily_workflows "C:\Users\[username]\Documents\git repos\daily_workflows"`
+5. Copy current installed skills into it:
+   `Copy-Item -Recurse "$env:USERPROFILE\.claude\skills\*" "C:\Users\[username]\Documents\git repos\daily_workflows\skills\" -Force`
+6. Commit and push:
    ```
-   git -C "[localPath]" add -A
-   git -C "[localPath]" commit -m "init: bootstrap from ai_feautures"
-   git -C "[localPath]" push
+   git -C "C:\Users\[username]\Documents\git repos\daily_workflows" add -A
+   git -C "C:\Users\[username]\Documents\git repos\daily_workflows" commit -m "init: bootstrap from ai_feautures"
+   git -C "C:\Users\[username]\Documents\git repos\daily_workflows" push
    ```
-9. Write config to `$env:USERPROFILE\.claude\.workflows-repo` (two lines):
+7. Write config to `$env:USERPROFILE\.claude\.workflows-repo` (two lines):
    ```
-   [localPath]
-   https://github.com/[username]/[name]
+   C:\Users\[username]\Documents\git repos\daily_workflows
+   https://github.com/[username]/daily_workflows
    ```
-10. Write initial hash: `git -C "[localPath]" rev-parse HEAD` → save to `$env:USERPROFILE\.claude\.skills-hash`
+8. Write initial hash: `git -C "C:\Users\[username]\Documents\git repos\daily_workflows" rev-parse HEAD` → save to `$env:USERPROFILE\.claude\.skills-hash`
 
 Confirm:
 > *"Done — your workflows repo is live at https://github.com/[username]/[name]. All future skill updates will come from there."*
