@@ -197,7 +197,7 @@ Your team has a shared set of skills already built and ready to use — `/prep`,
 Open a terminal in VS Code and run:
 
 ```powershell
-git clone https://github.com/jojomitrou/ai_feautures "$env:TEMP\qm-skills"; Copy-Item -Recurse "$env:TEMP\qm-skills\skills\*" "$env:USERPROFILE\.claude\skills\"; Remove-Item -Recurse -Force "$env:TEMP\qm-skills"
+git clone https://github.com/jojomitrou/company-workflows "$env:TEMP\qm-skills"; Copy-Item -Recurse "$env:TEMP\qm-skills\skills\*" "$env:USERPROFILE\.claude\skills\"; Remove-Item -Recurse -Force "$env:TEMP\qm-skills"
 ```
 
 That's it — the skills are now installed. Restart Claude Code and they're ready.
