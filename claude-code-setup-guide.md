@@ -133,7 +133,12 @@ claude mcp add bigquery -- npx -y @channel.io/bigquery-mcp
 
 Then set your project:
 ```
-set BIGQUERY_PROJECT_ID=qih-data-prod
+set BIGQUERY_PROJECT_ID=
+```
+
+> **Ask your team lead for the correct project ID** and paste it after the `=` before running this.
+
+```
 set BIGQUERY_LOCATION=EU
 ```
 
