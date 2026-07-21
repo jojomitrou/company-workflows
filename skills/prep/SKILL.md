@@ -1,7 +1,7 @@
 ---
 name: prep
 description: Use at the start of every VS Code session to run the daily workflow kickoff — verifies critical connections, ensures all work is saved to GitHub, gathers context, and organises the day into Must Do, Should Do, and Check Later.
-version: 2.7
+version: 2.8
 origin: company
 ---
 
@@ -244,9 +244,13 @@ Gather this before asking the user anything. Do not narrate each step.
 
 ## Phase 4 — Plan the Day
 
-Ask one question:
+**Print the Daily Briefing Report (below) first, unconditionally.** It renders from whatever Phase 2/3 gathered — it never waits on, or gets skipped by, the main-goal question. If the question below is skipped, answered ambiguously (e.g. "Other" with no elaboration), or not yet asked, the box still prints in full with every section (connections, meetings, project state, last session, standup, Must/Should/Check buckets built from carry-over tasks + context alone).
+
+After the box is on screen, ask one question:
 
 > **"What's the main thing you want to get done today?"**
+
+If the answer is a real goal, fold it into Must Do and re-note it in `task_log.md`'s Planned list — no need to reprint the whole box, a one-line "Added: [goal]" is enough. If the answer is ambiguous/empty/"Other" with nothing further, don't block or re-ask — just proceed with the box as already printed.
 
 Then combine with everything from Phase 2 and 3 and organise into three buckets:
 
@@ -286,7 +290,7 @@ When the user is done for the session, run `/wrap` — it owns closing the log, 
 
 ## Daily Briefing Report
 
-Gather everything silently first, then print one single box. Read the company name from `$env:USERPROFILE\.claude\.company` if present; omit that line entirely if the file doesn't exist.
+Gather everything silently first, then print one single box — **always, every run, unconditionally, in full.** This box is not gated on the main-goal question (Phase 4) or on any other prior answer; it prints even if a question earlier in the run was skipped, declined, or answered with something unusable. Read the company name from `$env:USERPROFILE\.claude\.company` if present; omit that line entirely if the file doesn't exist.
 
 ```
 ════════════════════════════════════════
@@ -359,3 +363,4 @@ After printing, ask only: **"Anything to add or move between buckets?"** — adj
 8. Never resolve a company-zone edit silently — back it up and say so, in either direction.
 9. Never ship an upstream skill release without a version bump and a `docs/CHANGELOG.md` line.
 10. Never reintroduce a second update channel — the setup guide's install one-liner is first-run only, `/prep` is the only updater.
+11. Never gate the Daily Briefing Report box on the main-goal question or any other question's answer — it prints unconditionally, every run, even if that question is skipped or answered ambiguously.

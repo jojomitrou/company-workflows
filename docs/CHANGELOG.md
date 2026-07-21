@@ -4,6 +4,14 @@ One entry per skill per release. No version bump ships without a line here — s
 
 ---
 
+## 2026-07-21 — prep v2.8, briefing box was gate-able by the main-goal question
+
+Phase 4 read as sequential prose ("ask one question" → "combine into buckets" → box print at the end of the file) so a model reading it in order treated the Daily Briefing Report as something that only rendered once the main-goal question resolved. When that question came back ambiguous ("Other" with no follow-up text), the box never printed at all — connections, meetings, project state, standup, all silently skipped.
+
+Fixed: the box now prints first and unconditionally in Phase 4, before the main-goal question is even asked. The question moved to *after* the box, and its answer only folds into Must Do — it never gates, delays, or can suppress the box. Added Never-do rule 11 to make this permanent: the box is not allowed to depend on any question's answer, ever.
+
+---
+
 ## 2026-07-21 — prep v2.7, setup guide fix (no-GitHub-account gap)
 
 Neither the setup guide nor `/prep`'s own fail-message ever told someone without a GitHub account that they needed one — both assumed `gh auth login` was hitting an existing login. Fixed:
