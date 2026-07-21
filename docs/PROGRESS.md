@@ -8,7 +8,7 @@
 | B1 zone-aware update + allowlist sync | DONE — see docs/CHANGELOG.md 2026-07-21 | 2026-07-21 | b79b76a — anchored extract-reinject algorithm live in /prep 1d (v2.4); .workflows.json migration done on this machine; all 8 tests pass + 2 real bugs found/fixed (docs/test-evidence/2026-07-21-b1-test-matrix.md); one-channel doc update in setup guide |
 | B2 /skills-status | DONE — see docs/CHANGELOG.md 2026-07-21 | 2026-07-21 | e99cd18 — new 7th core skill, read-only, reuses /prep's hash check; verified live against real repo state on this machine (daily_workflows a6174d8) |
 | C1 company repo design | DONE — see docs/CHANGELOG.md 2026-07-21 | 2026-07-21 | 0d663c3 — docs/COMPANY-TARGETS-DESIGN.md; 3 decisions made directly with user (location: inside company-workflows; rollup: opt-in PR from /wrap; team scoping: deferred); /wrap Step 4b implemented (opt-in push, off by default); synced to daily_workflows 9eb18a7 |
-| C2 cascade live | DONE — see docs/CHANGELOG.md 2026-07-21 | 2026-07-21 | /quarter Step 0 reads targets/{period}.md for real; RETRO computes real target-id rollup; month/week unchanged by design (only quarter ever tags a real target id) |
+| C2 cascade live | DONE — see docs/CHANGELOG.md 2026-07-21 | 2026-07-21 | 9aafe8f — /quarter Step 0 reads targets/{period}.md for real; RETRO computes real target-id rollup; month/week unchanged by design (only quarter ever tags a real target id); synced to daily_workflows cd062f3 |
 | C3 rollup job | pending | | |
 | C4 admin view | pending | | |
 | D1 progress export | pending | | |
