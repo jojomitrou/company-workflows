@@ -62,7 +62,7 @@ claude --version
 
 This lets Claude Code talk to GitHub — where all your code files live online.
 
-> **No GitHub account yet?** Go to **https://github.com/signup** first and create one (free) — any username, your work email is fine. Come back here once you're logged in on github.com in your browser.
+> **No GitHub account yet?** Go to **https://github.com/signup** first and create one (free) — any username, but sign up with your **work email address**, since access to company repos is granted to work emails only. Come back here once you're logged in on github.com in your browser.
 
 1. Go to: **https://cli.github.com**
 2. Use the dropdown, select Windows Install and Click **"Download for Windows"**
