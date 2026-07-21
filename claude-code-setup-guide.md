@@ -1,8 +1,10 @@
 # How to Set Up Claude Code (From Zero!)
 
-> Think of Claude Code like a super-smart helper that lives in your computer and can write code, talk to databases, and help you get things done. This guide will help you get everything installed step by step. Don't worry — just do one thing at a time!
+> Think of Claude Code like a super-smart helper that lives in your computer and can write code, talk to databases, and help you get things done. This guide gets you through **Core Setup** first — everyone does this, ~30 minutes, and `/prep` will work end to end when you're done. After that, pick the **Role Add-ons** that match your job. Don't worry — just do one thing at a time!
 
 ---
+
+# Core Setup (Everyone)
 
 ## Step 1 — Install VS Code (Where You'll Do Everything)
 
@@ -30,7 +32,7 @@ Node.js is like the engine that makes Claude Code go. Without it, nothing works!
 2. Click the big green button that says **"Get Node.js"**
 3. On the next page, click the green button to **download the Windows installer**
 4. Run the installer — just keep clicking "Next" until it's done
-4. When it's finished, open a new terminal inside VS Code (go to **Terminal → New Terminal** at the top menu) and type:
+5. When it's finished, open a new terminal inside VS Code (go to **Terminal → New Terminal** at the top menu) and type:
    ```
    node --version
    ```
@@ -68,7 +70,7 @@ This lets Claude Code talk to GitHub — where all your code files live online.
    ```
    ! gh auth login
    ```
-5. It will ask you some questions:
+6. It will ask you some questions:
    - Choose **GitHub.com**
    - Choose **HTTPS**
    - Choose **Login with a web browser**
@@ -77,95 +79,33 @@ This lets Claude Code talk to GitHub — where all your code files live online.
    > **Tip:** If the browser doesn't open automatically, hold **Ctrl** and **left-click** on the link in the terminal — it will open in your browser.
 
    - It will open your browser — paste the code and approve it
-6. Done! Claude Code can now read and save your GitHub files.
+7. Done! Claude Code can now read and save your GitHub files.
 
 > **Why do we need this?** Because all our code (SQL, dashboards, etc.) is stored on GitHub. This is how Claude Code fetches and saves changes.
 
 ---
 
-## Step 5 — Install Google Cloud SDK (for BigQuery)
+## Step 5 — Connect Your Work Tools (Gmail, Calendar, Jira)
 
-BigQuery is where all our data lives. This tool lets Claude Code run queries and fetch data for you.
+These aren't a separate install — they're **Connectors** on your Anthropic account (claude.ai). Turn them on once there, and they become available inside Claude Code automatically, since it's the same login.
 
-1. Go to: **https://cloud.google.com/sdk/docs/install**
-2. Download the **Windows installer**
-3. Run it — keep clicking Next
-4. At the end it will open a browser and ask you to log in with your Google/work account — do that
-5. After logging in, go back to the VS Code terminal. If you are not already in a Claude session, type `claude` and press **Enter** to start one (just like in Step 4 above). Then type:
+1. Go to **https://claude.ai** in your browser and log in with your work account
+2. Click your profile in the bottom-left → **Settings** → **Connectors**
+3. Connect each of these (one click each, then authorize with your work account when prompted):
+   - **Gmail**
+   - **Google Calendar**
+   - **Atlassian** (this is what gives you Jira)
+4. Back in VS Code, start (or restart) a Claude Code session and type:
    ```
-   gcloud auth application-default login
+   /mcp
    ```
-   This lets BigQuery tools know who you are.
+   You should see Gmail, Google Calendar, and Atlassian listed — that confirms they're live.
 
-Check it worked:
-```
-gcloud --version
-```
+> **Why this matters:** `/prep` checks all three of these every morning as part of your daily briefing (meetings, tickets). Skip this step and `/prep` will flag them — connect whenever you're ready, it won't block anything else.
 
 ---
 
-## Step 6 — Install Obsidian (Your Knowledge Base)
-
-Obsidian is a note-taking app that works like a second brain. It stores everything as plain text files on your computer — so Claude Code can read and write into it directly, no syncing needed.
-
-**Why do we use it?** It gives you a permanent place to store decisions, research, meeting notes, and context that Claude can access in future sessions. Think of it as the memory that lives outside Claude.
-
-1. Go to: **https://obsidian.md**
-2. Click **Download** and choose **Windows**
-3. Run the installer — keep clicking Next
-4. Open Obsidian and create a new **Vault** — this is just a folder on your computer where all your notes will live. Pick somewhere easy to find (e.g. `Documents\vault`)
-5. That's it — you can now point Claude Code at your vault folder and it will be able to read and search your notes
-
-> **Tip:** When you open VS Code, set your project folder to your Obsidian vault (or a subfolder inside it) so Claude always has access to your notes.
-
----
-
-## Step 7 — Set Up the BigQuery MCP
-
-An MCP is like a special plugin that gives Claude Code a superpower — in this case, the ability to actually run queries on BigQuery data.
-
-You don't need to install anything extra — just tell Claude Code to connect to it.
-
-Open a terminal in your project folder and run:
-```
-claude mcp add bigquery -- npx -y @channel.io/bigquery-mcp
-```
-
-Then set your project:
-```
-set BIGQUERY_PROJECT_ID=
-```
-
-> **Ask your team lead for the correct project ID** and paste it after the `=` before running this.
-
-```
-set BIGQUERY_LOCATION=EU
-```
-
-> After this, when you talk to Claude Code, it can actually query the database and pull real numbers for you!
-
----
-
-## Step 8 — Connect Jira (Atlassian)
-
-Jira lets Claude read your tickets, check sprint status, and update issues directly from VS Code — no tab switching needed.
-
-The Jira connection is bundled inside the **pm-skills** plugin (installed in Step 10). Once you have done that, authenticate it once:
-
-1. Open a terminal in VS Code, type `claude` and press **Enter** to start a session
-2. Type `/mcp` in the Claude chat — you will see a list of all connected services
-3. Find **Atlassian** in the list — it will show "Needs authentication"
-4. Claude will give you a link — open it in your browser (**Ctrl + left-click**)
-5. Log in with your Atlassian work account
-6. Done — Jira is now connected
-
-> **Note:** Complete Step 11 (Install Skills) first, then come back here to authenticate. The Jira MCP is installed automatically with the pm-skills plugin.
-
-> **Why connect Jira?** So Claude can pull ticket details, check what's in your sprint, and update statuses without you having to copy-paste anything between windows.
-
----
-
-## Step 9 — Start Claude Code in VS Code
+## Step 6 — Start Claude Code & Set Your Permission Mode
 
 You're ready! But before you start, you need to open a **project folder**.
 
@@ -182,22 +122,19 @@ claude
 That's it. A screen will appear at the bottom and you can start talking to it like a chat — right inside VS Code.
 
 > [!IMPORTANT]
-> **Stop being asked "yes or no" for every single action**
+> **Understanding permission prompts**
 >
-> The first time you use Claude Code, it will ask for your permission before running almost anything — every command, every file it reads, every tool it uses. This gets old very quickly.
+> By default, Claude Code asks before running commands, editing files, or using tools. This is the safe, recommended default — especially in your first few weeks, and always when you're touching shared or production systems (a repo other people rely on, anything that can `git push`, anywhere real data lives).
 >
-> **To turn this off permanently:**
-> 1. Inside the Claude chat, type `/config` and press **Enter**
-> 2. Find the setting called **"Default permission mode"**
-> 3. Change it to **Auto**
+> **If a specific repetitive action gets tedious** (e.g. approving the same safe read-only command over and over), you can approve it "always" the next time it's asked, or switch the whole session to **Auto** mode via `/config` → **"Default permission mode"**.
 >
-> ⚠️ **What this means:** Claude will run commands and make changes without asking first. It is very capable and this is safe for normal daily work — but be aware that it will act on your instructions immediately. If you ever want it to pause and check before doing something, you can change this back to **Default** the same way.
+> ⚠️ **What Auto actually means, concretely:** Claude will run commands, edit files, and push to GitHub without asking first, for the rest of that session. That's fine for repetitive low-risk work you're supervising anyway — it is **not** a "set once and forget" toggle for shared or production repos. If you're ever unsure, leave it as **Default** — you lose nothing but a couple of extra clicks, and you can switch back the same way at any time.
 
 ---
 
-## Step 10 — Install Company Skills
+## Step 7 — Install Company Skills
 
-Your team has a shared set of skills already built and ready to use — `/prep`, `/wrap`, `/week`, `/month`, and `/quarter`. One command pulls them all down.
+Your team has a shared set of skills already built and ready to use — `/prep`, `/wrap`, `/week`, `/month`, `/quarter`, and `/radar`. One command pulls them all down.
 
 Open a terminal in VS Code and run:
 
@@ -207,72 +144,163 @@ git clone https://github.com/jojomitrou/company-workflows "$env:TEMP\qm-skills";
 
 That's it — the skills are now installed. Restart Claude Code and they're ready.
 
-**To update your skills later** (when new ones are added by the team):
-Run the exact same command — it overwrites with the latest version automatically. Or just start a new session with `/prep` — it checks for updates in the background every time.
+**To update later:** just run `/prep` — it checks for updates from your personal workflows repo every time and pulls anything new automatically. (This one-liner is for **first-time install only** — running it again would overwrite any personal customizations you've made to these files, so `/prep`'s built-in update check is the one and only way to update afterwards.)
 
 **What did this install?**
 
 | Skill | When to use it | What it does |
 |-------|---------------|--------------|
-| `/prep` | Start of every session | Checks your GitHub, Obsidian, and connections are all live — then organises your day into Must Do, Should Do, and Check Later |
-| `/wrap` | End of every session | Saves everything to GitHub, writes a session note to Obsidian, and flags what's first up tomorrow |
-| `/week` | Monday morning or Friday afternoon | Monday: sets 3 goals for the week. Friday: reviews how the week went and notes carry-overs |
+| `/prep` | Start of every session | Checks GitHub and your connectors are live, saves anything left uncommitted, then organises your day into Must Do, Should Do, and Check Later |
+| `/wrap` | End of every session | Saves everything to GitHub, logs what got done, and sets up tomorrow |
+| `/week` | Monday morning or Friday afternoon | Monday: sets 3 goals for the week. Friday: reviews how the week went |
 | `/month` | First 3 days or last 3 days of the month | Plans the month ahead with goals and key dates, or runs a quick retro at the end |
-| `/quarter` | First 3 days or last 3 days of the quarter | Sets 3 outcomes for the quarter with milestones, or reviews what was achieved before the next one starts |
+| `/quarter` | First 3 days or last 3 days of the quarter | Sets 3 outcomes for the quarter, or reviews what was achieved before the next one starts |
+| `/radar` | Any time you mention a project keyword | Routes straight to the right repo/file instead of a slow broad search — learns new routes as you use it |
 
 ---
 
-## Step 11 — Install Skills
+## Step 8 — Verify Your Install
 
-Skills are like superpowers you activate by typing `/skill-name` in the Claude chat. Before you can use them, you need to install them once. Here's the full list of installs — you only ever need to do this once.
+One command per tool, then a real end-to-end check.
+
+```
+node --version
+claude --version
+gh auth status
+```
+
+Each should print a version number or "Logged in" — no errors.
+
+Then, inside a Claude Code session, run:
+```
+/prep
+```
+
+**What you should see:** the daily briefing box. GitHub should show ✅. Gmail/Calendar/Jira should show ✅ if you did Step 5, or a plain note (not a scary error) if you skipped it. If a bootstrap question appears ("What's your company or team name?") — that's expected on your very first run, just answer it.
+
+If anything looks broken rather than just "not connected yet," see **Something Went Wrong?** near the end of this guide.
+
+✅ **Core Setup is done.** Everything `/prep` needs to work is now in place. Move on to whichever Role Add-ons match your job — or skip straight to using Claude if nothing else applies to you yet.
 
 ---
 
-### How to Install All Skills
+# Role Add-ons
 
-> **Important:** All `/plugin` commands below must be run **inside a Claude session in VS Code** — not in the regular terminal. Open your VS Code terminal, type `claude` and press **Enter** to start a session, then copy and paste the commands directly into the Claude chat.
+Pick the ones relevant to your role. None of these are required for `/prep`, `/wrap`, or the other core skills to work — they add extra capabilities on top.
 
-**Step 1 — Add the plugin marketplace**
+## 📊 Data & Analytics — BigQuery
+
+BigQuery is where a lot of our data lives. This lets Claude Code run queries and fetch data for you directly.
+
+1. Install Google Cloud SDK:
+   - Go to: **https://cloud.google.com/sdk/docs/install**
+   - Download and run the **Windows installer** — keep clicking Next
+   - At the end it opens a browser and asks you to log in with your work Google account — do that
+2. Back in the VS Code terminal (start a Claude session first if you're not in one — type `claude`), run:
+   ```
+   gcloud auth application-default login
+   ```
+   This lets BigQuery tools know who you are.
+3. Check it worked:
+   ```
+   gcloud --version
+   ```
+4. Add the BigQuery MCP with your project settings baked in (this is the one command you need — **ask your team lead for the real project ID** and swap it in before running):
+   ```
+   claude mcp add bigquery -e BIGQUERY_PROJECT_ID=<ask-your-team-lead> -e BIGQUERY_LOCATION=EU -- npx -y @channel.io/bigquery-mcp
+   ```
+   Using `-e` here means the project ID and location are saved directly in the MCP's own config — not a shell variable that disappears the moment you close the terminal.
+
+> After this, when you talk to Claude Code, it can actually query the database and pull real numbers for you.
+
+---
+
+## 🔍 Engineering
+
+All `/plugin` commands below must be run **inside a Claude session in VS Code** — open your VS Code terminal, type `claude`, press **Enter**, then paste these directly into the Claude chat (not the regular terminal).
+
+**Add the plugin marketplace (once):**
 ```
 /plugin marketplace add anthropics/claude-plugins-official
 ```
 
-**Step 2 — Install each skill pack**
+**Install:**
 
 | What it installs | Command | Source |
 |-----------------|---------|--------|
 | Superpowers (TDD, debugging, planning skills) | `/plugin install superpowers@claude-plugins-official` | https://github.com/obra/superpowers |
 | GSD — project & workflow management | `npm install -g get-shit-done` | https://www.npmjs.com/package/get-shit-done |
-| Marketing & CRO skills | `npx skills install coreyhaines31/marketingskills` | https://github.com/coreyhaines31/marketingskills |
-| GitHub skills (github, gh-issues) | `npx skills install openclaw/openclaw` | https://github.com/openclaw/openclaw |
+| GitHub skills (`/github`, `/gh-issues`) | `npx skills install openclaw/openclaw` | https://github.com/openclaw/openclaw |
 | ClickHouse | `npx skills install affaan-m/everything-claude-code` | https://github.com/affaan-m/everything-claude-code |
 
-> After installing, restart Claude in VS Code and all skills below are ready to use.
-
----
-
-**Step 3 — Add the second marketplace (alirezarezvani)**
-
-This marketplace has additional skill packs by domain. First add it:
+Then add the second marketplace for the core/advanced engineering packs:
 ```
 /plugin marketplace add alirezarezvani/claude-skills
 ```
+```
+/plugin install engineering-skills@claude-code-skills
+```
+(24 core engineering skills — see `skills-catalogue.md` for the full list.)
 
-Then install by domain — pick the ones relevant to your role:
-
-| What it installs | Command | Skills |
-|-----------------|---------|--------|
-| Core engineering | `/plugin install engineering-skills@claude-code-skills` | 24 core engineering skills |
-| Advanced engineering | `/plugin install engineering-advanced-skills@claude-code-skills` | 25 POWERFUL-tier skills |
-| Product | `/plugin install product-skills@claude-code-skills` | 12 product skills |
-| Marketing | `/plugin install marketing-skills@claude-code-skills` | 43 marketing skills |
-| Auto-memory curation | `/plugin install self-improving-agent@claude-code-skills` |
+Restart Claude in VS Code after installing and everything above is ready to use.
 
 ---
 
+## 📋 Product & PM
+
+You already connected Jira in Core Setup Step 5 — nothing extra needed for tickets.
+
+For planning-specific skills, add the second marketplace (if you haven't already via the Engineering add-on above):
+```
+/plugin marketplace add alirezarezvani/claude-skills
+```
+```
+/plugin install product-skills@claude-code-skills
+```
+(12 product skills — see `skills-catalogue.md`.)
+
 ---
 
-## Step 12 — Built-in Claude Commands
+## 📣 Marketing
+
+```
+/plugin marketplace add alirezarezvani/claude-skills
+```
+```
+/plugin install marketing-skills@claude-code-skills
+```
+(43 marketing skills.) Plus the original marketing/CRO pack:
+```
+npx skills install coreyhaines31/marketingskills
+```
+
+See `skills-catalogue.md` for the full breakdown of what each pack adds.
+
+---
+
+## 📚 Knowledge Base (anyone) — Obsidian
+
+Obsidian is a note-taking app that works like a second brain. It stores everything as plain text files on your computer — so Claude Code can read and write into it directly, no syncing needed. Optional — not required for any core skill to work.
+
+1. Go to: **https://obsidian.md**
+2. Click **Download** and choose **Windows**
+3. Run the installer — keep clicking Next
+4. Open Obsidian and create a new **Vault** — this is just a folder on your computer where all your notes will live. Pick somewhere easy to find (e.g. `Documents\vault`)
+5. That's it — you can now point Claude Code at your vault folder and it will be able to read and search your notes
+
+> **Tip:** When you open VS Code, set your project folder to your Obsidian vault (or a subfolder inside it) so Claude always has access to your notes.
+
+---
+
+# Optional Extras
+
+Not tied to a role — install if you want more depth once the above feels comfortable. See `skills-catalogue.md` → "Advanced / Optional Packs" for the commands (advanced-tier engineering skills, auto-memory curation).
+
+---
+
+# Reference
+
+## Built-in Claude Commands
 
 These are commands built into Claude Code — no installation needed. Type them directly in the Claude chat at any time.
 
@@ -292,7 +320,7 @@ These are commands built into Claude Code — no installation needed. Type them 
 | `/ide` | Connect Claude to your VS Code window |
 | `/init` | Set up Claude Code in a new project folder |
 | `/loop` | Run a repeating task automatically |
-| `/mcp` | Manage MCP server connections |
+| `/mcp` | Manage MCP server and connector connections |
 | `/memory` | View or manage Claude's memory files |
 | `/model` | Switch AI model mid-session |
 | `/plugin` | Manage installed plugins |
@@ -308,8 +336,6 @@ These are commands built into Claude Code — no installation needed. Type them 
 | `/tokens` | Show token usage for this session |
 | `/ultrareview` | Deep multi-agent cloud code review — billed separately |
 
----
-
 ### Thinking Keywords
 
 Add these words anywhere in your message to boost how hard Claude thinks. No slash needed — just write them naturally.
@@ -321,8 +347,6 @@ Add these words anywhere in your message to boost how hard Claude thinks. No sla
 | `ultrathink` | Maximum thinking — for your hardest problems |
 
 > **Example:** *"ultrathink — refactor this function to handle all edge cases"*
-
----
 
 ### Power User Prompt Prefixes
 
@@ -345,226 +369,9 @@ These are community-discovered shorthand words you add anywhere in your message.
 
 > **Does not work:** `/nofilter`, `/unlocked`, `/jailbreak`, `/godmode` — these are myths. They have no effect.
 
----
+## Full Skills Reference
 
-## Step 13 — Skills Reference — What You Can Ask Claude to Do
-
-Here's everything available, grouped by who needs them and why.
-
----
-
-### 🛠 For Everyone — Session & Workflow Management
-
-These help you manage your day-to-day work with Claude across any project.
-
-| Skill | What it does |
-|-------|--------------|
-| `/gsd-help` | Show all available GSD commands and how to use them |
-| `/gsd-do` | Just type what you want — Claude figures out which command to run |
-| `/gsd-next` | Automatically move to the next step in your workflow |
-| `/gsd-resume-work` | Pick up exactly where you left off from a previous session |
-| `/gsd-pause-work` | Save your context before stopping so nothing gets lost |
-| `/gsd-progress` | Check where you are in a project and what's next |
-| `/gsd-session-report` | Summary of what was done in this session |
-| `/gsd-note` | Quickly capture an idea without interrupting your flow |
-| `/gsd-add-todo` | Add a task from what you're currently discussing |
-| `/gsd-check-todos` | See your pending tasks and pick one to work on |
-| `/gsd-add-backlog` | Park an idea for later without losing it |
-| `/gsd-review-backlog` | Go through parked ideas and decide which to act on |
-| `/gsd-thread` | Keep context alive across multiple sessions on the same work |
-| `/gsd-explore` | Think through an idea before committing to a plan |
-
----
-
-### 📋 For Project & Milestone Planning
-
-Use these when starting or managing a project with multiple phases of work.
-
-| Skill | What it does |
-|-------|--------------|
-| `/gsd-new-project` | Start a brand new project — sets up all planning structure |
-| `/gsd-new-milestone` | Begin a new phase/version of an existing project |
-| `/gsd-discuss-phase` | Talk through a phase before planning it (recommended first step) |
-| `/gsd-plan-phase` | Create a detailed step-by-step plan for a phase |
-| `/gsd-execute-phase` | Run all the steps in a phase plan automatically |
-| `/gsd-autonomous` | Run all remaining phases from start to finish, hands-free |
-| `/gsd-fast` | Do a small quick task with no planning overhead |
-| `/gsd-quick` | Do a task with proper commits and tracking, but skipping optional steps |
-| `/gsd-add-phase` | Add a new phase to the end of your current plan |
-| `/gsd-insert-phase` | Squeeze in urgent work between existing phases |
-| `/gsd-remove-phase` | Remove a phase that's no longer needed |
-| `/gsd-analyze-dependencies` | Check which phases depend on each other |
-| `/gsd-list-phase-assumptions` | See what assumptions Claude is making before it starts planning |
-| `/gsd-complete-milestone` | Archive a finished milestone and get ready for the next one |
-| `/gsd-milestone-summary` | Generate a summary of a milestone for the team |
-| `/gsd-audit-milestone` | Check a milestone was actually completed properly before archiving |
-| `/gsd-plan-milestone-gaps` | Find and fill anything missing in your milestone |
-| `/gsd-stats` | See overall project stats — phases done, time, commits |
-| `/gsd-manager` | One screen to manage multiple phases at once |
-| `/gsd-workstreams` | Run parallel tracks of work at the same time |
-| `/gsd-new-workspace` | Create a separate isolated workspace for a specific piece of work |
-| `/gsd-list-workspaces` | See all your active workspaces |
-| `/gsd-remove-workspace` | Delete a workspace when it's no longer needed |
-| `/gsd-plant-seed` | Save an idea with a trigger — Claude surfaces it at the right moment later |
-
----
-
-### 🔍 For Developers & Engineers
-
-These are for writing, reviewing, debugging, and shipping code.
-
-| Skill | What it does |
-|-------|--------------|
-| `/gsd-code-review` | Review code changes for bugs, security issues, and quality |
-| `/gsd-code-review-fix` | Automatically fix the issues found in a code review |
-| `/gsd-audit-fix` | Find issues, fix them, test, and commit — all in one go |
-| `/gsd-audit-uat` | Review all outstanding test items across phases |
-| `/gsd-debug` | Systematic debugging that keeps state even if the session resets |
-| `/gsd-forensics` | Investigate what went wrong in a failed workflow |
-| `/gsd-validate-phase` | Check that a completed phase was properly tested |
-| `/gsd-verify-work` | Confirm that built features actually work as expected |
-| `/gsd-secure-phase` | Check that security measures were properly implemented |
-| `/gsd-add-tests` | Generate tests for a completed phase |
-| `/gsd-map-codebase` | Get a deep analysis of the whole codebase |
-| `/gsd-scan` | Quick lightweight scan of the codebase |
-| `/gsd-intel` | Query or refresh Claude's knowledge about the codebase |
-| `/gsd-docs-update` | Create or update project documentation |
-| `/gsd-import` | Bring in an external plan and check it against existing decisions |
-| `/gsd-undo` | Safely roll back commits from a phase |
-| `/gsd-cleanup` | Archive old phase folders to keep things tidy |
-| `/gsd-health` | Check and fix the planning directory if something looks off |
-| `/gsd-reapply-patches` | Re-apply your local changes after updating GSD |
-| `/gsd-update` | Update GSD to the latest version |
-| `/gsd-review` | Get a second opinion on your plan from another AI |
-| `/gsd-research-phase` | Research how to implement a phase (used inside plan-phase) |
-| `/gsd-profile-user` | Build a profile of how you work so Claude gets better over time |
-| `/gsd-set-profile` | Switch Claude's quality/speed balance (quality / balanced / budget) |
-| `/gsd-settings` | Configure how GSD behaves |
-
----
-
-### 🎨 For Frontend / UI Work
-
-Use these when building or reviewing user interfaces.
-
-| Skill | What it does |
-|-------|--------------|
-| `/gsd-ui-phase` | Create a design contract (spec) for a frontend phase before building |
-| `/gsd-ui-review` | Audit implemented frontend code across 6 quality dimensions |
-
----
-
-### 🐙 For GitHub & Shipping
-
-Use these to manage your GitHub workflow — issues, PRs, and code review.
-
-| Skill | What it does |
-|-------|--------------|
-| `/github` | Do anything with GitHub — check PRs, CI runs, issues, comments |
-| `/gh-issues` | Fetch issues, auto-fix them with sub-agents, and open PRs |
-| `/gsd-pr-branch` | Create a clean PR branch ready for code review |
-| `/gsd-ship` | Create the PR, run review, and get it ready to merge |
-
----
-
-### 📊 For Data & Analytics Teams
-
-Use these when working with databases, queries, or data notebooks.
-
-| Skill | What it does |
-|-------|--------------|
-| `/clickhouse-io` | ClickHouse query patterns and analytics optimisation |
-
----
-
-### 📣 For Marketing Teams
-
-Use these when working on marketing, growth, content, or SEO.
-
-**Strategy & Research**
-| Skill | What it does |
-|-------|--------------|
-| `/product-marketing-context` | Set up your product/audience context so all other marketing skills work better |
-| `/customer-research` | Analyse customer interviews, reviews, and research |
-| `/marketing-ideas` | Brainstorm marketing strategies and growth ideas |
-| `/content-strategy` | Plan what content to create and why |
-| `/marketing-psychology` | Apply psychology and behavioural science to your marketing |
-| `/pricing-strategy` | Figure out what to charge and how to structure your plans |
-| `/launch-strategy` | Plan a product launch or feature announcement |
-| `/competitor-alternatives` | Build competitor comparison pages |
-
-**Writing & Copy**
-| Skill | What it does |
-|-------|--------------|
-| `/copywriting` | Write marketing copy for any page |
-| `/copy-editing` | Edit and improve existing copy |
-| `/cold-email` | Write B2B cold outreach emails |
-| `/email-sequence` | Build automated email drip campaigns |
-| `/social-content` | Create LinkedIn, Twitter, and other social posts |
-| `/ad-creative` | Generate ad headlines, descriptions, and variations at scale |
-| `/sales-enablement` | Create pitch decks, one-pagers, and objection-handling docs |
-
-**SEO & Search**
-| Skill | What it does |
-|-------|--------------|
-| `/seo-audit` | Diagnose why your site isn't ranking |
-| `/ai-seo` | Optimise content to be cited by AI search engines |
-| `/schema-markup` | Add structured data for rich Google search results |
-| `/programmatic-seo` | Create hundreds of SEO pages from templates and data |
-| `/site-architecture` | Plan your website's page structure and navigation |
-
-**Conversion & Growth**
-| Skill | What it does |
-|-------|--------------|
-| `/page-cro` | Improve conversion rates on any marketing page |
-| `/signup-flow-cro` | Reduce drop-off on your signup or registration flow |
-| `/onboarding-cro` | Get more users to activate after signing up |
-| `/paywall-upgrade-cro` | Convert free users to paid inside your app |
-| `/popup-cro` | Optimise popups and modals for conversion |
-| `/form-cro` | Improve any lead capture or contact form |
-| `/churn-prevention` | Reduce cancellations and recover lost users |
-| `/referral-program` | Build a refer-a-friend or affiliate program |
-| `/ab-test-setup` | Design and run A/B tests properly |
-| `/analytics-tracking` | Set up and audit your analytics and conversion tracking |
-| `/free-tool-strategy` | Plan a free tool to generate leads or SEO value |
-| `/lead-magnets` | Create ebooks, checklists, or templates for email capture |
-| `/paid-ads` | Plan and optimise paid ad campaigns |
-| `/revops` | Connect your marketing and sales pipeline |
-
----
-
-### 📣 For Marketing Teams (expanded)
-
-The marketing-skills pack adds many more skills on top of the originals.
-
-**New — Content & Social**
-| Skill | What it does |
-|-------|--------------|
-| `/marketing-skills:content-creator` | End-to-end content creation |
-| `/marketing-skills:content-humanizer` | Make AI content sound natural and human |
-| `/marketing-skills:content-production` | Manage content production workflows |
-| `/marketing-skills:social-media-manager` | Full social media management |
-| `/marketing-skills:social-media-analyzer` | Analyse social media performance |
-| `/marketing-skills:x-twitter-growth` | Grow an audience on X/Twitter |
-| `/marketing-skills:youtube-full` | Full YouTube channel strategy and content |
-| `/marketing-skills:webinar-marketing` | Plan and promote webinars |
-
-**New — SEO & Discovery**
-| Skill | What it does |
-|-------|--------------|
-| `/marketing-skills:aeo` | Answer engine optimisation (AI search) |
-| `/marketing-skills:app-store-optimization` | Improve App Store / Play Store rankings |
-| `/marketing-skills:prompt-engineer-toolkit` | Use prompts to power marketing workflows |
-
-**New — Strategy & Ops**
-| Skill | What it does |
-|-------|--------------|
-| `/marketing-skills:marketing-context` | Set shared context for all marketing work |
-| `/marketing-skills:marketing-strategy-pmm` | Product marketing strategy |
-| `/marketing-skills:marketing-demand-acquisition` | Demand generation and acquisition strategy |
-| `/marketing-skills:marketing-ops` | Marketing operations and tooling |
-| `/marketing-skills:campaign-analytics` | Track and analyse campaign performance |
-| `/marketing-skills:brand-guidelines` | Define and enforce brand guidelines |
+Everything installable, organized by role, lives in **`skills-catalogue.md`** (same folder as this guide) — come back to it any time you want to see what else is available.
 
 ---
 
@@ -576,28 +383,31 @@ The marketing-skills pack adds many more skills on top of the originals.
 | Node.js (required!) | https://nodejs.org |
 | Claude Code docs | https://docs.anthropic.com/claude-code |
 | GitHub CLI | https://cli.github.com |
+| Connectors (Gmail/Calendar/Jira) | https://claude.ai → Settings → Connectors |
 | Google Cloud SDK | https://cloud.google.com/sdk/docs/install |
 | BigQuery MCP (npm) | https://www.npmjs.com/package/@channel.io/bigquery-mcp |
+| Obsidian | https://obsidian.md |
 
 ---
 
 ## Checklist — Tick These Off As You Go
 
-- [ ] **Step 1** — VS Code installed and open
-- [ ] **Step 1** — Claude Code extension installed inside VS Code
+**Core Setup (everyone):**
+- [ ] **Step 1** — VS Code installed and open, Claude Code extension installed
 - [ ] **Step 2** — Node.js installed (`node --version` shows a number)
 - [ ] **Step 3** — Claude Code installed (`claude --version` shows a number)
 - [ ] **Step 4** — GitHub CLI installed and logged in (`gh auth status` says "Logged in")
-- [ ] **Step 5** — Google Cloud SDK installed (`gcloud --version` shows a number)
-- [ ] **Step 5** — Google account authenticated (`gcloud auth application-default login` done)
-- [ ] **Step 6** — Obsidian installed and vault created
-- [ ] **Step 7** — BigQuery MCP added to Claude Code
-- [ ] **Step 8** — Jira (Atlassian) MCP authenticated
-- [ ] **Step 9** — Project folder opened in VS Code and Claude session started
-- [ ] **Step 10** — Company skills installed (`/prep`, `/wrap`, `/week`, `/month`, `/quarter`)
-- [ ] **Step 11** — Skill marketplaces added and skill packs installed
-- [ ] **Step 12** — Familiar with built-in slash commands and thinking keywords
-- [ ] **Step 13** — Skills reference reviewed — know what to type for your role
+- [ ] **Step 5** — Gmail, Calendar, and Atlassian connectors enabled on claude.ai
+- [ ] **Step 6** — Project folder opened in VS Code, Claude session started, permission mode understood
+- [ ] **Step 7** — Company skills installed (`/prep`, `/wrap`, `/week`, `/month`, `/quarter`, `/radar`)
+- [ ] **Step 8** — `/prep` runs and shows the daily briefing box
+
+**Role Add-ons (as relevant):**
+- [ ] BigQuery MCP added (Data & Analytics)
+- [ ] Engineering skill packs installed
+- [ ] Product skill pack installed
+- [ ] Marketing skill packs installed
+- [ ] Obsidian installed and vault created (optional, anyone)
 
 ---
 
@@ -607,8 +417,12 @@ The marketing-skills pack adds many more skills on top of the originals.
 
 **GitHub login not working** — Try `gh auth login` again and make sure you're using the right GitHub account.
 
-**BigQuery not connecting** — Make sure you ran `gcloud auth application-default login` and that you're logged in with the right Google account (the work one, not personal).
+**BigQuery not connecting** — Make sure you ran `gcloud auth application-default login` and that you're logged in with the right Google account (the work one, not personal), and that the `-e BIGQUERY_PROJECT_ID` you used is the real one from your team lead.
+
+**Gmail/Calendar/Jira showing as not connected in `/prep`** — Go back to claude.ai → Settings → Connectors and confirm they show as connected there; then restart your Claude Code session (`/mcp` should list them).
+
+**Skills not showing up after Step 7** — Restart Claude Code (close the terminal, open a new one, run `claude` again).
 
 ---
 
-*Written for the Quantum Media team — June 2026*
+*Written for the Quantum Media team — June 2026. Restructured into Core Setup / Role Add-ons — July 2026.*
