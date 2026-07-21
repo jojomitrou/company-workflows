@@ -1,55 +1,66 @@
 ---
 name: quarter
 description: Use at the start of a quarter to plan it, or at the end to retro it. Auto-detects which mode based on the date.
+version: 2.0
+origin: company
 ---
 
 # Quarterly Planning & Retro
 
-Check today's date and run the correct mode automatically:
-- **First 3 days of Q1 (Jan), Q2 (Apr), Q3 (Jul), Q4 (Oct):** PLAN mode
-- **Last 3 days of Q1 (Mar), Q2 (Jun), Q3 (Sep), Q4 (Dec):** RETRO mode
-- **Any other time:** ask — *"Are we planning the quarter or reviewing it?"*
+`/prep` Phase 0 offers this automatically on the first 3 days of Q1/Q2/Q3/Q4 (PLAN) and the last 3 days of Mar/Jun/Sep/Dec (RETRO). If run standalone at any other time, ask: **"Are we planning the quarter or reviewing it?"**
 
 **Task files (always these paths):**
-- Active tasks: `$env:USERPROFILE\.claude\carry_over_tasks.md`
-- Session log:  `$env:USERPROFILE\.claude\task_log.md`
+- Active tasks: `[personal_path]\tasks\carry_over_tasks.md`
+- Session log:  `[personal_path]\tasks\task_log.md`
+
+`[personal_path]` = line 1 of `$env:USERPROFILE\.claude\.workflows-repo`.
 
 ---
 
 ## PLAN Mode
 
-### 1 — Gather context silently
+### Step 0 — Read the level above (company targets, if configured)
+
+Quarter is the top of the personal cascade. If a company targets repo is configured (it isn't yet — this is a Phase C feature; skip this silently until then), read `targets/{year}-{Qx}.md` filtered to your scope and show them before asking. Otherwise proceed straight to Step 2 with no parent link — every quarter goal will be `standalone`. **The cascade never blocks on the company layer being missing.**
+
+Also read last quarter's retro `yaml` block in `task_log.md` for carry-overs.
+
+### Step 1 — Gather context silently
 - Run `git log --oneline --since="90 days ago"` for an activity count
-- Read `task_log.md` — find last quarter's retro entry for carry-overs
 - Check Jira for any active epics or OKRs (if connected)
 - Check Calendar for key milestones this quarter (if connected)
 
-### 2 — Ask
-> **"What are the 3 most important outcomes you want from this quarter?"**
+<!-- personal:personal-context:start -->
+<!-- personal:personal-context:end -->
+
+### Step 2 — Ask
+
+> **"What are the 3 most important outcomes you want from this quarter? For each, how will we know it happened?"**
+
+(If company targets were found in Step 0: *"...and which of these targets does each one advance, if any?"*)
 
 Then: *"Any key deadlines, launches, or milestones this quarter?"*
 
-### 3 — Build the quarterly plan
+### Step 3 — Build the quarterly plan
 
 | Bucket | What goes in it |
 |--------|----------------|
-| 🎯 Quarter Goals | The 3 outcomes the user named |
+| 🎯 Quarter Goals | The 3 outcomes the user named, each tagged `measure:` and `advances: {target-id}` or `standalone` |
 | 📅 Key Milestones | Launches, deadlines, events |
 | 📋 Projects to Complete | Work that must finish this quarter |
 | 🔁 Carry-overs | Unfinished goals from last quarter |
 
-Add the 3 goals to `carry_over_tasks.md`.
+Add the 3 goals to `carry_over_tasks.md` as `M` priority tasks, `target:` set to their own goal id.
 
-### 4 — Open a quarter entry in `task_log.md`
+### Step 4 — Open a quarter entry in `task_log.md`
 
-Append:
 ```
 ## Q[X] [Year] Plan — [date]
 
 ### Goals
-1. [goal 1]
-2. [goal 2]
-3. [goal 3]
+1. [goal 1] (→ advances T-2026Qx-NN / standalone) — measure: [one line]
+2. [goal 2] (→ advances T-2026Qx-NN / standalone) — measure: [one line]
+3. [goal 3] (→ advances T-2026Qx-NN / standalone) — measure: [one line]
 
 ### Key milestones
 - [date]: [milestone]
@@ -61,11 +72,24 @@ Append:
 - [item if any]
 ```
 
-### 5 — Commit and push automatically
+```yaml
+period: 2026-Q[x]
+goals:
+  - id: q-01
+    text: [goal 1]
+    measure: [one line]
+    advances: standalone     # or a company target id once Phase C exists
+carryovers: [q-lastquarter-03]
 ```
-git add -A
-git commit -m "Q[X] [Year] plan — [date]"
-git push
+
+### Step 5 — Commit and push (to the personal repo, not the current folder)
+
+```
+git -C "[personal_path]" add -A
+git -C "[personal_path]" diff --cached --quiet || (
+  git -C "[personal_path]" commit -m "Q[X] [Year] plan — [date]"
+  git -C "[personal_path]" push
+)
 ```
 
 Print:
@@ -82,7 +106,7 @@ Print:
   📋 Projects: [N]
   🔁 Carry-overs: [N]
 ══════════════════════════════════════
-  Saved to GitHub.
+  Saved to your workflows repo.
 ══════════════════════════════════════
 ```
 
@@ -90,24 +114,27 @@ Print:
 
 ## RETRO Mode
 
-### 1 — Gather context silently
+### Step 0 — Read this quarter's plan block
+
+Find this quarter's own `yaml` plan block — gives goal ids, text, measures. If missing, score from the human-readable text and note the gap.
+
+### Step 1 — Gather context silently
 - Run `git log --oneline --since="90 days ago"` for full shipped work
-- Read `task_log.md` — collect all session, week, and month entries for this quarter:
-  - Total tasks completed ✅
-  - Total not completed ❌
-  - Total added ➕
-  - Month goal achievement rates
+- Read `task_log.md` — collect all session, week, and month entries for this quarter: total completed ✅ / not completed ❌ / added ➕, and month goal achievement rates (from month retro `yaml` blocks this quarter)
 - Check Jira for completed epics this quarter (if connected)
 
-### 2 — Ask four questions (one at a time)
+### Step 2 — Score against measure, then ask four questions
+
+For each goal, score against its captured `measure`: `yes` / `partial` / `no`, with one line of evidence.
+
+Then ask, one at a time:
 1. *"What were the biggest wins this quarter?"*
 2. *"Which goals didn't get done — and why?"*
 3. *"What surprised you most — good or bad?"*
 4. *"What's the one thing you'd change going into next quarter?"*
 
-### 3 — Close the quarter entry in `task_log.md`
+### Step 3 — Close the quarter entry in `task_log.md`
 
-Append to the `## Q[X] [Year] Plan` entry:
 ```
 ## Q[X] [Year] Retro — [date]
 
@@ -116,11 +143,12 @@ Append to the `## Q[X] [Year] Plan` entry:
 - Completed ✅: [N]
 - Not completed ❌: [N]
 - Added during quarter ➕: [N]
+- Month goals achieved this quarter: [N/M] (from month retros)
 
-### Goals achieved
-- ✅ / ❌ [goal 1]
-- ✅ / ❌ [goal 2]
-- ✅ / ❌ [goal 3]
+### Goals scored
+- [q-01] [goal 1] — achieved: yes/partial/no — evidence: [one line]
+- [q-02] [goal 2] — achieved: yes/partial/no — evidence: [one line]
+- [q-03] [goal 3] — achieved: yes/partial/no — evidence: [one line]
 
 ### Biggest wins
 [user's answer]
@@ -135,13 +163,25 @@ Append to the `## Q[X] [Year] Plan` entry:
 [user's answer]
 ```
 
+```yaml
+period: 2026-Q[x]
+scored:
+  - id: q-01
+    achieved: yes
+    evidence: [one line]
+rollup: {}   # populated once a company target repo exists (Phase C) — each key is a target id
+```
+
 Ask: **"Any goals to carry into next quarter?"** — add them to `carry_over_tasks.md`.
 
-### 4 — Commit and push automatically
+### Step 4 — Commit and push (to the personal repo)
+
 ```
-git add -A
-git commit -m "Q[X] [Year] retro — [date]"
-git push
+git -C "[personal_path]" add -A
+git -C "[personal_path]" diff --cached --quiet || (
+  git -C "[personal_path]" commit -m "Q[X] [Year] retro — [date]"
+  git -C "[personal_path]" push
+)
 ```
 
 Print:
@@ -159,3 +199,12 @@ Print:
   Good quarter. On to Q[X+1].
 ══════════════════════════════════════
 ```
+
+---
+
+## Never-do
+
+1. Never plan without at least checking for company targets — but never block if they don't exist.
+2. Never commit the working project folder as part of a planning ritual — always the personal repo.
+3. Never accept a goal without a one-line measure.
+4. Never fire on a boundary day that `/prep` Phase 0 already owns.

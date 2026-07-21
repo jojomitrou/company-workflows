@@ -1,56 +1,75 @@
 ---
 name: wrap
 description: Use at the end of every VS Code session to commit and push all work, log completed tasks, and save tomorrow's starting point.
+version: 2.0
+origin: company
 ---
 
 # Session Wrap
 
-Run this when the day's work is done. Fully automatic — no questions except the two below.
+Run this when the day's work is done. Automatic except the two questions in Steps 2–3 and the one save confirmation in Step 1.
 
 **Task files (always these paths):**
-- Active tasks: `$env:USERPROFILE\.claude\carry_over_tasks.md`
-- Session log:  `$env:USERPROFILE\.claude\task_log.md`
+- Active tasks: `[personal_path]\tasks\carry_over_tasks.md`
+- Session log:  `[personal_path]\tasks\task_log.md`
+
+`[personal_path]` = line 1 of `$env:USERPROFILE\.claude\.workflows-repo`.
 
 ---
 
 ## Step 1 — Save Everything to GitHub
 
-```
-git add -A
-git commit -m "[brief description of what was done] — [date]"
-git push
-```
+Run `git status --short` in the current project folder. If there are changes:
+- Show a 3-line summary (file count + names, truncated if more).
+- Ask: **"Save these to GitHub now?"** (default yes).
+- If yes:
+  ```
+  git add -A
+  git commit -m "[brief description of what was done] — [date]"
+  git push
+  ```
+- If no: note it and move on — don't push silently.
 
-If there is nothing to commit, note it and move on.
+If there is nothing to commit, note it and move on without asking.
+
+<!-- personal:extra-saves:start -->
+<!-- personal:extra-saves:end -->
 
 ---
 
-## Step 1b — Sync Skills to Your Workflows Repo
+## Step 1b — Sync Skills + Commit Tasks to Your Workflows Repo
 
-After saving the main repo, sync any skill changes to your personal workflows repo.
-
-1. Read local path (line 1) from `$env:USERPROFILE\.claude\.workflows-repo` — if the file doesn't exist, skip (bootstrap hasn't run yet)
-2. Copy all installed skills into the repo:
-   `Copy-Item -Recurse "$env:USERPROFILE\.claude\skills\*" "[localPath]\skills\" -Force`
-3. Commit and push if anything changed:
+1. Read local path (line 1) from `$env:USERPROFILE\.claude\.workflows-repo` — if the file doesn't exist, skip (bootstrap hasn't run yet).
+2. Sync skills to the personal repo — **allowlist only, never a whole-folder glob**:
+   ```powershell
+   $companySkills = 'prep','wrap','week','month','quarter'
+   foreach ($s in $companySkills) {
+     Copy-Item -Recurse "$env:USERPROFILE\.claude\skills\$s" "[localPath]\skills\" -Force
+   }
+   ```
+   Also copy any locally-installed skill whose front-matter has `origin: personal`, by name — never with a wildcard over the whole `~/.claude\skills` folder. Third-party packs (marketplace skills, GSD, etc.) are never synced; they have their own updaters.
+3. Commit and push if anything changed. Because `task_log.md` and `carry_over_tasks.md` now live directly inside `[localPath]\tasks\` (prep and wrap write there all session — no copy step needed), this one commit carries both the skill sync and today's task changes:
    ```
    git -C "[localPath]" add -A
    git -C "[localPath]" diff --cached --quiet || (
-     git -C "[localPath]" commit -m "skills: sync — [date]"
+     git -C "[localPath]" commit -m "skills + tasks sync — [date]"
      git -C "[localPath]" push
    )
    ```
+   This step is where the golden rule (nothing only-local) is actually enforced for task history — it used to live in `~/.claude`, outside any repo.
 
-If there are no changes, skip silently — do not mention it.
+If there is nothing to sync, skip silently — do not mention it.
 
 ---
 
 ## Step 2 — Log Completed Tasks
 
-1. Read `carry_over_tasks.md` (if it exists — skip if empty/missing)
-2. Show the current task list to the user
-3. Ask: **"Which of these did you finish today?"**
-4. Note the user's answer — used to close the session log in Step 3
+1. Read `carry_over_tasks.md` — skip if empty/missing.
+2. Gather this session's commits so far (`git log --oneline` for the current project folder, scoped to today) as candidate evidence.
+3. Where a commit message plausibly matches an open task (shared keywords, an id, a file path), **propose it first**: *"Looks like you finished #2 and #4 (based on N commits) — confirm?"*
+4. For anything not confidently matched, fall back to asking directly: **"Which of these did you finish today?"**
+
+Note the confirmed answer — used to close the session log in Step 4.
 
 If the list is empty or the user says none, skip without asking again.
 
@@ -60,7 +79,7 @@ If the list is empty or the user says none, skip without asking again.
 
 Ask: **"Anything to add for tomorrow?"**
 
-Note any new tasks the user gives — used in Step 4.
+Note any new tasks using the task-line schema (defined in `/prep` Phase 2): `- [ ] {id} | {M/S/L} | {text} | added:{date} | target:{goal-id|—}`. Default `target:` to `—` unless the task clearly advances a currently-open week goal (check the most recent week plan YAML block in `task_log.md`).
 
 If they say nothing or "no", skip.
 
@@ -68,7 +87,12 @@ If they say nothing or "no", skip.
 
 ## Step 4 — Close the Session Log
 
-Find the current open session entry in `task_log.md` (the most recent `## Session —` block opened by `/prep`). Append the closing record:
+Find the current open session entry in `task_log.md` (the most recent `## Session —` block). If none exists — e.g. `/wrap` is being run without a prior `/prep` this session — open a minimal one first:
+```
+## Session — [date] (opened by /wrap — no prior /prep this session)
+```
+
+Then append the closing record:
 
 ```
 ### Completed ✅
@@ -83,8 +107,8 @@ Find the current open session entry in `task_log.md` (the most recent `## Sessio
 
 Then update `carry_over_tasks.md`:
 - Remove completed tasks
-- Keep not-completed tasks
-- Add new tasks
+- Keep not-completed tasks (preserve their `target:` field)
+- Add new tasks (schema above)
 - Re-number cleanly
 
 ---
@@ -98,6 +122,7 @@ Print the final wrap box:
   SESSION WRAPPED — [Date]
 ════════════════════════════════════════
   ✅  Committed and pushed to GitHub
+  📊  Synced: skills v[X.Y], tasks pushed
 
   ✅  COMPLETED TODAY
   • [task] / None
@@ -116,3 +141,12 @@ Print the final wrap box:
   See you next time.
 ════════════════════════════════════════
 ```
+
+---
+
+## Never-do
+
+1. Never sync third-party skills to the personal repo — allowlist only.
+2. Never push without showing the 3-line summary and getting a confirm.
+3. Never close a session log that was never opened without noting that explicitly.
+4. Never skip the tasks-folder commit — that's the actual enforcement of the golden rule now.
