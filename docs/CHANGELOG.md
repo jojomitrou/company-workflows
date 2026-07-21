@@ -4,6 +4,16 @@ One entry per skill per release. No version bump ships without a line here — s
 
 ---
 
+## 2026-07-21 — wrap v2.4, prep v2.6 (Phase C1)
+
+Implements `docs/COMPANY-TARGETS-DESIGN.md` — the opt-in progress push, the one piece of C1 that's actual working code (the rest of C1 is the design doc itself, gating C2–C4).
+
+- **`/wrap`** — new Step 4b (opt-in, off by default via `.workflows.json`'s `company_rollup_opt_in`): when a period-level retro closed this session, pushes only the filtered company-target `rollup` entries (never prose, task text, or evidence lines) to `progress/_incoming/{username}/{period}.md` in `company-workflows`, via a branch + PR. Unique per-user path, never conflicts, never blocks `/wrap` if it fails.
+- **`/prep`** — `.workflows.json` schema documented with the new `company_rollup_opt_in` field (manual opt-in, `/prep` never sets it).
+- **`docs/COMPANY-TARGETS-DESIGN.md` (new)** — full C1 design: repo location (inside `company-workflows`), schemas (target/incoming/aggregated progress), the opt-in push mechanism, edge cases, never-do list. Three real decisions recorded, asked directly rather than assumed.
+
+---
+
 ## 2026-07-21 — skills-status v1.0 (new skill, 7th core skill), prep v2.5, wrap v2.3 (Phase B2)
 
 - **`/skills-status` (new)** — read-only diagnostic: shows each core skill's installed version, whether upstream has moved ahead (`up to date` / `N commits behind`), whether the company zone has been hand-edited since the last update (reusing `/prep`'s own hash check), and which personal blocks are filled vs still empty. Never writes, pushes, or prompts.

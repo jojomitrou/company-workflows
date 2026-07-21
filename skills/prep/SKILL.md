@@ -1,7 +1,7 @@
 ---
 name: prep
 description: Use at the start of every VS Code session to run the daily workflow kickoff — verifies critical connections, ensures all work is saved to GitHub, gathers context, and organises the day into Must Do, Should Do, and Check Later.
-version: 2.5
+version: 2.6
 origin: company
 ---
 
@@ -109,11 +109,12 @@ A service that was never set up for this role at install time should render `—
   "personal_path": "<local clone path>",
   "sync_skills": ["prep", "wrap", "week", "month", "quarter", "radar", "skills-status"],
   "company_zone_hashes": { "prep": "<sha256>", "wrap": "<sha256>" },
-  "pin_updates": false
+  "pin_updates": false,
+  "company_rollup_opt_in": false
 }
 ```
 
-This one file replaces three older ones (`.workflows-repo`, `.company`, `.skills-hash`) — see Migration below if you're carrying those forward.
+This one file replaces three older ones (`.workflows-repo`, `.company`, `.skills-hash`) — see Migration below if you're carrying those forward. `company_rollup_opt_in` is a Phase C field (see `docs/COMPANY-TARGETS-DESIGN.md`) — off by default, `/prep` never sets it; it's a manual opt-in edited by hand.
 
 ---
 

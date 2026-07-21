@@ -1,7 +1,7 @@
 ---
 name: wrap
 description: Use at the end of every VS Code session to commit and push all work, log completed tasks, and save tomorrow's starting point.
-version: 2.3
+version: 2.4
 origin: company
 ---
 
@@ -113,6 +113,24 @@ Then update `carry_over_tasks.md`:
 
 ---
 
+## Step 4b — Company Progress Push (opt-in, Phase C)
+
+Read `company_rollup_opt_in` from `.workflows.json`. If it's absent or `false`: skip this whole step silently, don't mention it.
+
+If `true`:
+1. Check whether a period-level RETRO (`/week`, `/month`, or `/quarter`) ran this session and appended a `rollup:` block to `task_log.md`. If none did: skip silently — most sessions don't close a period, nothing to push.
+2. From that retro's `yaml` block, take only the `rollup` entries whose key matches the company-target-id shape `T-{period}-\d+` (e.g. `T-2026Q3-02`) — drop every other key (personal/standalone parent ids like `m-01` never leave this machine).
+3. If nothing survives the filter: skip silently.
+4. Otherwise, in a local shallow clone of `company-workflows` (same pattern `/prep`'s update check uses — clone, act, delete):
+   - Write/append to `progress/_incoming/{github-username}/{period}.md`: `period`, `user`, the filtered `rollup` map, as a fenced `yaml` block.
+   - Commit (`progress: {username} {period}`), push a branch `progress-submit/{username}-{period}`, open a PR against `company-workflows`.
+   - If the push/PR fails for any reason (offline, no write access yet): note *"progress push skipped — {reason}"* in the wrap box, never block the rest of `/wrap` on it.
+5. Note in the wrap box: `📈 pushed progress for {N} target(s) — PR opened`.
+
+This step only ever touches its own `progress/_incoming/{username}/{period}.md` path — never any other user's file, never `targets/`, never anything outside that one path.
+
+---
+
 ## Step 5 — Confirm
 
 Print the final wrap box:
@@ -123,6 +141,7 @@ Print the final wrap box:
 ════════════════════════════════════════
   ✅  Committed and pushed to GitHub
   📊  Synced: skills v[X.Y], tasks pushed
+  📈  Progress pushed for [N] target(s) — PR opened   ← only if Step 4b fired
 
   ✅  COMPLETED TODAY
   • [task] / None
@@ -150,3 +169,6 @@ Print the final wrap box:
 2. Never push without showing the 3-line summary and getting a confirm.
 3. Never close a session log that was never opened without noting that explicitly.
 4. Never skip the tasks-folder commit — that's the actual enforcement of the golden rule now.
+5. Never push progress unless `company_rollup_opt_in: true` — off by default, no auto-opt-in.
+6. Never push anything but the filtered `rollup` dict — no prose, no task text, no evidence lines, no full `task_log.md`.
+7. Never write to another user's `progress/_incoming/{username}/` path.
