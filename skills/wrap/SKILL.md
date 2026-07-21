@@ -1,7 +1,7 @@
 ---
 name: wrap
 description: Use at the end of every VS Code session to commit and push all work, log completed tasks, and save tomorrow's starting point.
-version: 2.4
+version: 2.5
 origin: company
 ---
 
@@ -48,17 +48,23 @@ If there is nothing to commit, note it and move on without asking.
    }
    ```
    Also copy any locally-installed skill whose front-matter has `origin: personal`, by name — never with a wildcard over the whole `~/.claude\skills` folder. Third-party packs (marketplace skills, GSD, etc.) are never synced; they have their own updaters.
-3. Commit and push if anything changed. Because `task_log.md` and `carry_over_tasks.md` now live directly inside `[localPath]\tasks\` (prep and wrap write there all session — no copy step needed), this one commit carries both the skill sync and today's task changes:
+3. Stage everything and check if anything changed. Because `task_log.md` and `carry_over_tasks.md` now live directly inside `[localPath]\tasks\` (prep and wrap write there all session — no copy step needed), this one commit carries both the skill sync and today's task changes:
    ```
    git -C "[localPath]" add -A
-   git -C "[localPath]" diff --cached --quiet || (
+   git -C "[localPath]" diff --cached --quiet
+   ```
+   If nothing changed (exit code 0): skip silently, do not mention it, do not ask.
+
+   If something changed: show a short summary (file count + names, same 3-line style as Step 1) and ask —
+   > **"Push skills + task sync to your workflows repo now?"** (default yes).
+   - If yes:
+     ```
      git -C "[localPath]" commit -m "skills + tasks sync — [date]"
      git -C "[localPath]" push
-   )
-   ```
-   This step is where the golden rule (nothing only-local) is actually enforced for task history — it used to live in `~/.claude`, outside any repo.
+     ```
+   - If no: `git -C "[localPath]" reset` (unstage, leave working tree as-is) and note it — don't ask again this session.
 
-If there is nothing to sync, skip silently — do not mention it.
+   This step is where the golden rule (nothing only-local) is actually enforced for task history — it used to live in `~/.claude`, outside any repo. Enforcing the golden rule means always offering to save it, not always saving it unasked.
 
 ---
 
@@ -166,7 +172,7 @@ Print the final wrap box:
 ## Never-do
 
 1. Never sync third-party skills to the personal repo — allowlist only.
-2. Never push without showing the 3-line summary and getting a confirm.
+2. Never push without showing the 3-line summary and getting a confirm — this applies to Step 1b (the personal workflows repo) exactly as much as Step 1 (the project repo). No auto-push, ever, on either.
 3. Never close a session log that was never opened without noting that explicitly.
 4. Never skip the tasks-folder commit — that's the actual enforcement of the golden rule now.
 5. Never push progress unless `company_rollup_opt_in: true` — off by default, no auto-opt-in.

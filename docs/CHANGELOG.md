@@ -4,6 +4,14 @@ One entry per skill per release. No version bump ships without a line here — s
 
 ---
 
+## 2026-07-21 — wrap v2.5, Step 1b was pushing the personal workflows repo unasked
+
+Step 1b synced skills + task files to the user's personal `daily_workflows` repo, then committed and pushed automatically whenever anything had changed — no summary shown, no confirm asked. That's a direct violation of Never-do rule 2 ("never push without a confirm"), which was written with Step 1 (the project repo) in mind but never actually enforced on Step 1b (the personal repo) — the two silently diverged.
+
+Fixed: Step 1b now stages and diffs first, and if anything changed, shows the same 3-line summary as Step 1 and asks "Push skills + task sync to your workflows repo now?" before committing/pushing. A "no" unstages and moves on without asking again this session. Never-do rule 2 reworded to explicitly cover both steps.
+
+---
+
 ## 2026-07-21 — prep v2.8, briefing box was gate-able by the main-goal question
 
 Phase 4 read as sequential prose ("ask one question" → "combine into buckets" → box print at the end of the file) so a model reading it in order treated the Daily Briefing Report as something that only rendered once the main-goal question resolved. When that question came back ambiguous ("Other" with no follow-up text), the box never printed at all — connections, meetings, project state, standup, all silently skipped.
