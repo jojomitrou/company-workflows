@@ -4,6 +4,15 @@ One entry per skill per release. No version bump ships without a line here — s
 
 ---
 
+## 2026-07-21 — skills-status v1.0 (new skill, 7th core skill), prep v2.5, wrap v2.3 (Phase B2)
+
+- **`/skills-status` (new)** — read-only diagnostic: shows each core skill's installed version, whether upstream has moved ahead (`up to date` / `N commits behind`), whether the company zone has been hand-edited since the last update (reusing `/prep`'s own hash check), and which personal blocks are filled vs still empty. Never writes, pushes, or prompts.
+- **`/prep`** — bootstrap/migration and the core-skill list extended from 6 to 7 to include `skills-status`.
+- **`/wrap`** — `$companySkills` allowlist extended to include `skills-status`.
+- Setup guide updated to mention the 7th skill in Step 7's table and checklist.
+
+---
+
 ## 2026-07-21 — prep v2.4, wrap v2.2, week/month/quarter v2.2 (Phase B1)
 
 Implements `docs/FORK-PROBLEM-RESOLUTION.md` — the actual zone-aware update engine, replacing the whole-file `Copy-Item -Force` that A1 left as a known limitation.

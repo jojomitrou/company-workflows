@@ -1,7 +1,7 @@
 ---
 name: prep
 description: Use at the start of every VS Code session to run the daily workflow kickoff — verifies critical connections, ensures all work is saved to GitHub, gathers context, and organises the day into Must Do, Should Do, and Check Later.
-version: 2.4
+version: 2.5
 origin: company
 ---
 
@@ -107,7 +107,7 @@ A service that was never set up for this role at install time should render `—
   "upstream_ref": "<last-applied commit sha>",
   "personal_repo": "https://github.com/<user>/daily_workflows",
   "personal_path": "<local clone path>",
-  "sync_skills": ["prep", "wrap", "week", "month", "quarter", "radar"],
+  "sync_skills": ["prep", "wrap", "week", "month", "quarter", "radar", "skills-status"],
   "company_zone_hashes": { "prep": "<sha256>", "wrap": "<sha256>" },
   "pin_updates": false
 }
@@ -126,12 +126,12 @@ Say:
 2. Get GitHub username: `gh api user --jq .login`
 3. Create the repo: `gh repo create [username]/daily_workflows --private`
 4. Clone it to `C:\Users\[username]\Documents\git repos\daily_workflows` (this becomes `personal_path`)
-5. Copy the 6 core skills into it (never the whole local skills folder — other locally-installed skills are personal/opt-in, not team-shared):
-   `Copy-Item -Recurse "$env:USERPROFILE\.claude\skills\{prep,wrap,week,month,quarter,radar}" "[personal_path]\skills\" -Force`
+5. Copy the 7 core skills into it (never the whole local skills folder — other locally-installed skills are personal/opt-in, not team-shared):
+   `Copy-Item -Recurse "$env:USERPROFILE\.claude\skills\{prep,wrap,week,month,quarter,radar,skills-status}" "[personal_path]\skills\" -Force`
 6. Create the tasks folder with starter files (`carry_over_tasks.md`, `task_log.md`) if they don't already exist.
 7. Commit and push the personal repo (`init: bootstrap workflows repo`).
-8. Compute `company_zone_hashes` for each of the 6 skills from the files just copied — see **Stripping company zones** below.
-9. Write `.workflows.json`: `company` from step 1, `upstream: "jojomitrou/company-workflows"`, `upstream_ref` = `gh api repos/jojomitrou/company-workflows/commits/main --jq .sha`, `personal_repo`/`personal_path` from steps 3–4, `sync_skills` = the 6 names, the hashes from step 8, `pin_updates: false`.
+8. Compute `company_zone_hashes` for each of the 7 skills from the files just copied — see **Stripping company zones** below.
+9. Write `.workflows.json`: `company` from step 1, `upstream: "jojomitrou/company-workflows"`, `upstream_ref` = `gh api repos/jojomitrou/company-workflows/commits/main --jq .sha`, `personal_repo`/`personal_path` from steps 3–4, `sync_skills` = the 7 names, the hashes from step 8, `pin_updates: false`.
 
 Confirm:
 > *"Done — your workflows repo is live at [url]. `/prep` is now the only place skill updates come from — you'll never need to re-run an install command again."*
@@ -140,10 +140,10 @@ Confirm:
 
 **If the three old dotfiles exist but `.workflows.json` doesn't — migrate (one-time, automatic):**
 
-1. Build `.workflows.json`: `personal_path`/`personal_repo` from `.workflows-repo`'s two lines; `company` from `.company` (omit the field if that file's missing); `upstream: "jojomitrou/company-workflows"`; `sync_skills` = the 6 core skills; `pin_updates: false`.
+1. Build `.workflows.json`: `personal_path`/`personal_repo` from `.workflows-repo`'s two lines; `company` from `.company` (omit the field if that file's missing); `upstream: "jojomitrou/company-workflows"`; `sync_skills` = the 7 core skills; `pin_updates: false`.
 2. Set `upstream_ref` to the **current** upstream HEAD (`gh api repos/jojomitrou/company-workflows/commits/main --jq .sha`) — there's no earlier recorded position to resume from, so "right now" becomes the baseline.
-3. For each of the 6 skills, compute `company_zone_hashes[skill]` from the **current local file** (see Stripping company zones below). Any company-zone hand-edit made before today quietly becomes the new accepted baseline on this one pass — normal edit-detection resumes on the next real update.
-4. Cleanup offer — count folders in `[personal_path]/skills/` that aren't one of the 6 core skills. If more than zero, ask once:
+3. For each of the 7 skills, compute `company_zone_hashes[skill]` from the **current local file** (see Stripping company zones below). Any company-zone hand-edit made before today quietly becomes the new accepted baseline on this one pass — normal edit-detection resumes on the next real update.
+4. Cleanup offer — count folders in `[personal_path]/skills/` that aren't one of the 7 core skills. If more than zero, ask once:
    > *"Your workflows repo has {N} extra skills synced in from before (e.g. GSD packs) — never meant to be tracked here. Remove them from the repo? They stay installed locally — this only stops them being tracked in `daily_workflows`."*
    - Yes: `git -C "[personal_path]" tag "pre-cleanup-{today}"` first (recoverable), then `git -C "[personal_path]" rm -r skills/{name}` for each extra folder, commit, push.
    - No / not now: skip, don't ask again this migration.

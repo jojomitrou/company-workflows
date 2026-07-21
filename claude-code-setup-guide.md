@@ -134,7 +134,7 @@ That's it. A screen will appear at the bottom and you can start talking to it li
 
 ## Step 7 — Install Company Skills
 
-Your team has a shared set of skills already built and ready to use — `/prep`, `/wrap`, `/week`, `/month`, `/quarter`, and `/radar`. One command pulls them all down.
+Your team has a shared set of skills already built and ready to use — `/prep`, `/wrap`, `/week`, `/month`, `/quarter`, `/radar`, and `/skills-status`. One command pulls them all down.
 
 Open a terminal in VS Code and run:
 
@@ -156,6 +156,7 @@ That's it — the skills are now installed. Restart Claude Code and they're read
 | `/month` | First 3 days or last 3 days of the month | Plans the month ahead with goals and key dates, or runs a quick retro at the end |
 | `/quarter` | First 3 days or last 3 days of the quarter | Sets 3 outcomes for the quarter, or reviews what was achieved before the next one starts |
 | `/radar` | Any time you mention a project keyword | Routes straight to the right repo/file instead of a slow broad search — learns new routes as you use it |
+| `/skills-status` | Any time, out of curiosity | Shows your installed skill versions vs upstream, and what you've customized — read-only |
 
 ---
 
@@ -399,7 +400,7 @@ Everything installable, organized by role, lives in **`skills-catalogue.md`** (s
 - [ ] **Step 4** — GitHub CLI installed and logged in (`gh auth status` says "Logged in")
 - [ ] **Step 5** — Gmail, Calendar, and Atlassian connectors enabled on claude.ai
 - [ ] **Step 6** — Project folder opened in VS Code, Claude session started, permission mode understood
-- [ ] **Step 7** — Company skills installed (`/prep`, `/wrap`, `/week`, `/month`, `/quarter`, `/radar`)
+- [ ] **Step 7** — Company skills installed (`/prep`, `/wrap`, `/week`, `/month`, `/quarter`, `/radar`, `/skills-status`)
 - [ ] **Step 8** — `/prep` runs and shows the daily briefing box
 
 **Role Add-ons (as relevant):**

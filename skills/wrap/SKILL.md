@@ -1,7 +1,7 @@
 ---
 name: wrap
 description: Use at the end of every VS Code session to commit and push all work, log completed tasks, and save tomorrow's starting point.
-version: 2.2
+version: 2.3
 origin: company
 ---
 
@@ -42,7 +42,7 @@ If there is nothing to commit, note it and move on without asking.
 1. Read `personal_path` from `$env:USERPROFILE\.claude\.workflows.json` — if the file doesn't exist, skip (bootstrap hasn't run yet).
 2. Sync skills to the personal repo — **allowlist only, never a whole-folder glob**:
    ```powershell
-   $companySkills = 'prep','wrap','week','month','quarter','radar'
+   $companySkills = 'prep','wrap','week','month','quarter','radar','skills-status'
    foreach ($s in $companySkills) {
      Copy-Item -Recurse "$env:USERPROFILE\.claude\skills\$s" "[localPath]\skills\" -Force
    }
