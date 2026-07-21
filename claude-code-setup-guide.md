@@ -62,6 +62,8 @@ claude --version
 
 This lets Claude Code talk to GitHub — where all your code files live online.
 
+> **No GitHub account yet?** Go to **https://github.com/signup** first and create one (free) — any username, your work email is fine. Come back here once you're logged in on github.com in your browser.
+
 1. Go to: **https://cli.github.com**
 2. Use the dropdown, select Windows Install and Click **"Download for Windows"**
 3. Run the installer — keep clicking Next
@@ -78,7 +80,7 @@ This lets Claude Code talk to GitHub — where all your code files live online.
 
    > **Tip:** If the browser doesn't open automatically, hold **Ctrl** and **left-click** on the link in the terminal — it will open in your browser.
 
-   - It will open your browser — paste the code and approve it
+   - It will open your browser — paste the code and approve it. If you're not logged into github.com yet, it'll show a login page with a "Create an account" link — sign up there, then continue.
 7. Done! Claude Code can now read and save your GitHub files.
 
 > **Why do we need this?** Because all our code (SQL, dashboards, etc.) is stored on GitHub. This is how Claude Code fetches and saves changes.

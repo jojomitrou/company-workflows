@@ -1,7 +1,7 @@
 ---
 name: prep
 description: Use at the start of every VS Code session to run the daily workflow kickoff — verifies critical connections, ensures all work is saved to GitHub, gathers context, and organises the day into Must Do, Should Do, and Check Later.
-version: 2.6
+version: 2.7
 origin: company
 ---
 
@@ -47,7 +47,7 @@ gh auth status
 **If pass:** move on.
 
 **If fail:** say —
-> *"You're not logged into GitHub yet. Type `gh auth login` in the terminal and follow the steps — I'll walk you through it if you need."*
+> *"You're not logged into GitHub yet. Type `gh auth login` in the terminal and follow the steps — I'll walk you through it if you need. No GitHub account? Sign up free at github.com first, then run that command."*
 
 Do not proceed until GitHub is connected.
 

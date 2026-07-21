@@ -4,6 +4,14 @@ One entry per skill per release. No version bump ships without a line here — s
 
 ---
 
+## 2026-07-21 — prep v2.7, setup guide fix (no-GitHub-account gap)
+
+Neither the setup guide nor `/prep`'s own fail-message ever told someone without a GitHub account that they needed one — both assumed `gh auth login` was hitting an existing login. Fixed:
+- Setup guide Step 4: added a callout pointing to `github.com/signup` before the CLI steps, plus a note on the login-step itself for anyone who skips straight past it.
+- `/prep` 1a's fail message now mentions signing up as the first option, not just "run `gh auth login`."
+
+---
+
 ## 2026-07-21 — quarter v2.3 (Phase C2)
 
 The cascade goes live end-to-end: `/quarter` PLAN Step 0 now actually reads `targets/{year}-Q{x}.md` from `company-workflows` (shallow clone or `gh api`, same pattern `/prep` already uses) instead of the old "skip silently, Phase C isn't built yet" placeholder — still skips silently if the file doesn't exist or the repo's unreachable, that behavior never changes. RETRO mode now computes a real `rollup` map keyed by company-target id (`T-{period}-NN`), which is exactly what `/wrap`'s C1 opt-in push already knows how to filter and send. `month`/`week` need no changes — they only ever roll up to a personal parent id (`q-NN`/`m-NN`), never a target id directly; only quarter's own goals get tagged `advances: T-...`, so only quarter's retro can ever produce a real target-id rollup entry.
