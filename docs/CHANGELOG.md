@@ -4,7 +4,7 @@ One entry per skill per release. No version bump ships without a line here — s
 
 ---
 
-## 2026-07-21 — prep v2.3, wrap v2.2, week/month/quarter v2.2 (Phase B1)
+## 2026-07-21 — prep v2.4, wrap v2.2, week/month/quarter v2.2 (Phase B1)
 
 Implements `docs/FORK-PROBLEM-RESOLUTION.md` — the actual zone-aware update engine, replacing the whole-file `Copy-Item -Force` that A1 left as a known limitation.
 

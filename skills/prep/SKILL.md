@@ -1,7 +1,7 @@
 ---
 name: prep
 description: Use at the start of every VS Code session to run the daily workflow kickoff — verifies critical connections, ensures all work is saved to GitHub, gathers context, and organises the day into Must Do, Should Do, and Check Later.
-version: 2.3
+version: 2.4
 origin: company
 ---
 
@@ -156,7 +156,9 @@ Note once in the briefing: *"Migrated to the new update system — nothing lost,
 
 **Stripping company zones** (used by the hash step above and the update algorithm below):
 
-Find every `<!-- personal:NAME:start -->` … `<!-- personal:NAME:end -->` pair in the file and delete everything strictly between the two anchor lines, keeping the anchor lines themselves. What's left is the "company-zone skeleton." To hash it: write the skeleton to a temp file and run `Get-FileHash -Algorithm SHA256 -Path [tempfile] | Select-Object -ExpandProperty Hash`.
+Find every `<!-- personal:{name}:start -->` … `<!-- personal:{name}:end -->` pair in the file and delete everything strictly between the two anchor lines, keeping the anchor lines themselves. What's left is the "company-zone skeleton." To hash it: write the skeleton to a temp file and run `Get-FileHash -Algorithm SHA256 -Path [tempfile] | Select-Object -ExpandProperty Hash`.
+
+> **Anchor-name caveat (also found during B1 testing):** real anchor names are always lowercase kebab-case (`project-state`, `lookup-table`, etc. — never uppercase, never a bare word like `name`). Match strictly on that shape (e.g. `[a-z][a-z0-9-]*`). A looser pattern will also match this very paragraph's own `{name}` placeholder text as if it were a real anchor pair — which is exactly the false-positive this caveat exists to prevent.
 
 > **Encoding warning (found the hard way during B1 testing):** Windows PowerShell 5.1's default `Get-Content -Raw` / `Set-Content -Encoding utf8` mangles em-dashes and arrows on read (codepage mojibake) — it silently corrupts every skill file it touches. Read and write with explicit UTF-8, no BOM, instead: `[System.IO.File]::ReadAllText($path, [System.Text.Encoding]::UTF8)` to read, and a `New-Object System.Text.UTF8Encoding $false` writer (`[System.IO.File]::WriteAllText($path, $content, $utf8NoBom)`) to write. Do this for every read/write in this update algorithm, not just the hashing step.
 
@@ -171,11 +173,11 @@ Find every `<!-- personal:NAME:start -->` … `<!-- personal:NAME:end -->` pair 
 5. For each skill in `sync_skills`:
    a. Not installed locally yet (new skill added upstream since your last update)? Copy it straight in from the clone, note it as newly installed, move to the next skill.
    b. Read local file `L` and upstream file `U` (from the clone).
-   c. Extract every `<!-- personal:NAME:start/end -->` block from `L` into a map `{NAME: content}`.
+   c. Extract every `<!-- personal:{name}:start/end -->` block from `L` into a map `{name → content}`.
    d. Strip `L`'s company zones and hash the result — compare to `company_zone_hashes[skill]`.
       - **Match** → you haven't touched the company zone since the last update — proceed.
       - **Mismatch** → you edited inside the company zone. Save the full current `L` to `[personal_path]\backups\{skill}-{today}.md`, commit + push that backup to the personal repo, then proceed with the update anyway. Queue a loud briefing line: *"Your edits inside /{skill}'s company zone were preserved at `backups/{skill}-{today}.md` — move anything you want to keep into a personal block."*
-   e. Take `U` wholesale as the new content. For each `{NAME: content}` extracted from `L`, find the matching `<!-- personal:NAME:start/end -->` pair in `U` and insert `content` between them.
+   e. Take `U` wholesale as the new content. For each `{name → content}` extracted from `L`, find the matching `<!-- personal:{name}:start/end -->` pair in `U` and insert `content` between them.
       - Anchor missing in `U` (upstream removed or renamed it)? Append the orphaned content under a `## Recovered personal content` heading at the end of `U` instead, and note it in the briefing. Personal content is never deleted by an update — worst case it lands at the end of the file with a notice.
    f. Write the merged result to `~/.claude/skills/{skill}/SKILL.md`.
    g. Recompute `company_zone_hashes[skill]` from the merged file.
