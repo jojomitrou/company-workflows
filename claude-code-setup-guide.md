@@ -195,26 +195,44 @@ Pick the ones relevant to your role. None of these are required for `/prep`, `/w
 
 BigQuery is where a lot of our data lives. This lets Claude Code run queries and fetch data for you directly.
 
-1. Install Google Cloud SDK:
-   - Go to: **https://cloud.google.com/sdk/docs/install**
-   - Download and run the **Windows installer** — keep clicking Next
-   - At the end it opens a browser and asks you to log in with your work Google account — do that
-2. Back in the VS Code terminal (start a Claude session first if you're not in one — type `claude`), run:
-   ```
-   gcloud auth application-default login
-   ```
-   This lets BigQuery tools know who you are.
-3. Check it worked:
-   ```
-   gcloud --version
-   ```
-4. Add the BigQuery MCP with your project settings baked in (this is the one command you need — **ask your team lead for the real project ID** and swap it in before running):
-   ```
-   claude mcp add bigquery -e BIGQUERY_PROJECT_ID=<ask-your-team-lead> -e BIGQUERY_LOCATION=EU -- npx -y @channel.io/bigquery-mcp
-   ```
-   Using `-e` here means the project ID and location are saved directly in the MCP's own config — not a shell variable that disappears the moment you close the terminal.
+We use **Google's official BigQuery MCP server**. Google hosts it for us, so there is nothing to install on your computer. You connect to it once through your Claude account and it shows up inside Claude Code automatically.
+
+| Detail | Value |
+|--------|-------|
+| Server URL | `https://bigquery.googleapis.com/mcp` |
+| Transport | Streamable HTTP |
+| Sign-in | Your Google work account (OAuth) |
+
+**1 — Check you have the right access**
+
+Ask your manager or the data team to confirm your Google account has these roles on all needed projects:
+- **MCP Tool User** (`roles/mcp.toolUser`) — lets Claude use the BigQuery tools
+- **BigQuery Job User** (`roles/bigquery.jobUser`) — lets you run queries
+- **BigQuery Data Viewer** (`roles/bigquery.dataViewer`) — lets you read the data
+
+**2 — Connect BigQuery in Claude**
+
+1. Go to **https://claude.ai** and log in with your work account
+2. Open **Settings → Connectors**
+3. Find **BigQuery** in the list and click **Connect**
+4. A Google sign-in window opens — log in with your **work** Google account and click **Allow**
+
+**3 — Check it works in Claude Code**
+
+1. Open a terminal in VS Code, type `claude` and press **Enter**
+2. Type `/mcp` — you should see **claude.ai BigQuery** in the list marked as connected
+3. Try it: *"List the BigQuery datasets I have access to"*
 
 > After this, when you talk to Claude Code, it can actually query the database and pull real numbers for you.
+
+> **For admins only (one-time setup — skip this if BigQuery already appears in Connectors):**
+> 1. In the Google Cloud console go to **Google Auth Platform → Clients → Create client**
+> 2. Application type: **Web application**
+> 3. Under **Authorized redirect URIs** add `https://claude.ai/api/mcp/auth_callback`
+> 4. Click **Create** and copy the client ID and secret (the secret is only shown once — treat it like a password)
+> 5. In claude.ai organisation settings, add a **custom connector** named `BigQuery` with URL `https://bigquery.googleapis.com/mcp`, and paste the client ID and secret under **Advanced settings**
+>
+> Full instructions: https://docs.cloud.google.com/bigquery/docs/use-bigquery-mcp
 
 ---
 
@@ -388,7 +406,7 @@ Everything installable, organized by role, lives in **`skills-catalogue.md`** (s
 | GitHub CLI | https://cli.github.com |
 | Connectors (Gmail/Calendar/Jira) | https://claude.ai → Settings → Connectors |
 | Google Cloud SDK | https://cloud.google.com/sdk/docs/install |
-| BigQuery MCP (npm) | https://www.npmjs.com/package/@channel.io/bigquery-mcp |
+| BigQuery MCP (official Google docs) | https://docs.cloud.google.com/bigquery/docs/use-bigquery-mcp |
 | Obsidian | https://obsidian.md |
 
 ---
@@ -406,7 +424,7 @@ Everything installable, organized by role, lives in **`skills-catalogue.md`** (s
 - [ ] **Step 8** — `/prep` runs and shows the daily briefing box
 
 **Role Add-ons (as relevant):**
-- [ ] BigQuery MCP added (Data & Analytics)
+- [ ] BigQuery connector connected — `/mcp` shows **claude.ai BigQuery** (Data & Analytics)
 - [ ] Engineering skill packs installed
 - [ ] Product skill pack installed
 - [ ] Marketing skill packs installed
@@ -420,7 +438,7 @@ Everything installable, organized by role, lives in **`skills-catalogue.md`** (s
 
 **GitHub login not working** — Try `gh auth login` again and make sure you're using the right GitHub account.
 
-**BigQuery not connecting** — Make sure you ran `gcloud auth application-default login` and that you're logged in with the right Google account (the work one, not personal), and that the `-e BIGQUERY_PROJECT_ID` you used is the real one from your team lead.
+**BigQuery not connecting** — In claude.ai go to **Settings → Connectors**, disconnect BigQuery and connect it again with your **work** Google account (not personal). If you get a "permission denied" error, ask the data team to check you have the three roles listed in the BigQuery section.
 
 **Gmail/Calendar/Jira showing as not connected in `/prep`** — Go back to claude.ai → Settings → Connectors and confirm they show as connected there; then restart your Claude Code session (`/mcp` should list them).
 
