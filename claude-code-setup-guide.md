@@ -268,6 +268,8 @@ Skills are like superpowers you activate by typing `/skill-name` in the Claude c
 | ClickHouse | `npx skills install affaan-m/everything-claude-code` | https://github.com/affaan-m/everything-claude-code |
 
 > After installing, restart Claude in VS Code and all skills below are ready to use.
+>
+> **Want more?** See the [Extended Skills Reference](extended-skills-reference.md) for extra skill packs (C-level advisory, finance, project management, regulatory and more).
 
 ---
 
